@@ -4,6 +4,7 @@
 
 (generate_opam_files true)
 
+
 (source
  (github username/reponame))
 
@@ -16,6 +17,7 @@
 (documentation https://url/to/documentation)
 
 (package
+ (allow_empty)
  (name Bataille_Navale)
  (synopsis "A short synopsis")
  (description "A longer description")
