@@ -9,9 +9,13 @@ let tirer plateau x y =
     match plateau.(x).(y) with
     | Vide ->
         print_endline "Manqué!";
-        plateau.(x).(y) <- Vide
+        plateau.(x).(y) <- Rate
     | Bateau ->
         print_endline "Touché!";
         plateau.(x).(y) <- Touche
     | Touche ->
         print_endline "Déjà touché."
+    | Rate ->
+        print_endline "Déjà tiré ici."
+
+ 

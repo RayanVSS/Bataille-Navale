@@ -2,6 +2,7 @@ type case =
   | Vide
   | Bateau
   | Touche
+  | Rate
 
 (* Taille du plateau *)
 let taille = 8
@@ -27,6 +28,7 @@ let afficher_plateau plateau =
           | Vide -> print_string "- "
           | Bateau -> print_string "- " (* On cache les bateaux *)
           | Touche -> print_string "X "
+          | Rate -> print_string "O "
         ) ligne;
       print_newline ()
     ) plateau
