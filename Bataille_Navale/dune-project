@@ -1,13 +1,13 @@
 (lang dune 3.16)
 
-(name monpetitjeu)
+(name Bataille_Navale)
 
 (generate_opam_files true)
 
 (source
  (github username/reponame))
 
-(authors "Julien Narboux")
+(authors "Author Name")
 
 (maintainers "Maintainer Name")
 
@@ -16,10 +16,10 @@
 (documentation https://url/to/documentation)
 
 (package
- (name monpetitjeu)
+ (name Bataille_Navale)
  (synopsis "A short synopsis")
  (description "A longer description")
- (depends ocaml dune qcheck)
+ (depends ocaml dune)
  (tags
   (topics "to describe" your project)))
 

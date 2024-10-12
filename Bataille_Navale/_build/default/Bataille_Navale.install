@@ -1,0 +1,8 @@
+lib: [
+  "_build/install/default/lib/Bataille_Navale/META"
+  "_build/install/default/lib/Bataille_Navale/dune-package"
+  "_build/install/default/lib/Bataille_Navale/opam"
+]
+bin: [
+  "_build/install/default/bin/Bataille_Navale"
+]

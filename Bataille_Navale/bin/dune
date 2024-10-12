@@ -1,0 +1,4 @@
+(executable
+ (public_name Bataille_Navale)
+ (name main)
+ (libraries Bataille_Navale))

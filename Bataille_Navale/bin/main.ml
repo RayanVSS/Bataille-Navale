@@ -5,7 +5,6 @@ type case =
   | Touche
 
 
-let taille = 10
 (* Création d'un plateau vide *)
 let creer_plateau taille =
   Array.make_matrix taille taille Vide
