@@ -1,11 +1,15 @@
+(* Type des cases du plateau *)
 type case =
   | Vide
   | Bateau
   | Touche
   | Rate
+  | Coule
+
 
 (* Taille du plateau *)
 let taille = 8
+
 (* Création d'un plateau vide *)
 let creer_plateau taille =
   Array.make_matrix taille taille Vide
@@ -26,9 +30,10 @@ let afficher_plateau plateau =
       Array.iter (fun case ->
           match case with
           | Vide -> print_string "- "
-          | Bateau -> print_string "- " (* On cache les bateaux *)
-          | Touche -> print_string "X "
-          | Rate -> print_string "O "
+          | Bateau -> print_string "- "
+          | Touche -> print_string "O "
+          | Coule -> print_string "Ø "
+          | Rate -> print_string "X "
         ) ligne;
       print_newline ()
     ) plateau

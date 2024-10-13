@@ -1,12 +1,10 @@
 open Plateaux 
-open Bateaux
 open Regle
 open Action
 
 (* Fonction principale du jeu *)
 let jeu () =
   let plateau = creer_plateau taille in
-  placer_bateaux plateau;
 
   (* Boucle principale *)
   let rec boucle () =

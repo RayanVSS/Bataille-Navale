@@ -15,6 +15,8 @@ let tirer plateau x y =
         plateau.(x).(y) <- Touche
     | Touche ->
         print_endline "Déjà touché."
+    | Coule ->
+        print_endline "Déjà coulé."
     | Rate ->
         print_endline "Déjà tiré ici."
 

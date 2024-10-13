@@ -9,3 +9,6 @@ let tous_bateaux_coules plateau =
         ) ligne
     ) plateau;
   !coules
+
+
+  let nombre_navire = [1,2,3]
