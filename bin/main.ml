@@ -1,6 +1,7 @@
 open Plateaux 
 open Regle
 open Action
+open Bateaux
 
 (* Fonction principale du jeu *)
 let jeu () =
@@ -9,8 +10,9 @@ let jeu () =
   (* Boucle principale *)
   let rec boucle () =
     afficher_plateau plateau;
+    placer_bateaux plateau [(0, 0); (1, 0); (2, 0); (3, 0)];
     if tous_bateaux_coules plateau then
-      print_endline "Tous les bateaux ont été coulés! Victoire!"
+      afficher_plateau_gagner plateau
     else begin
       print_endline "Entrez les coordonnées de tir (x y) :";
       let coords = read_line () in
