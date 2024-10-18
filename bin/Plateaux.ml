@@ -8,7 +8,7 @@ type case =
 
 
 (* Taille du plateau *)
-let taille = 8
+let plateau_taille = 11
 
 (* Création d'un plateau vide *)
 let creer_plateau taille =
