@@ -1,6 +1,7 @@
 open Plateaux
 
 type nom_navire = Cuirasse | Croisseur | Torpilleur | SousMarin | PorteAvion
+
 type etat_navire = Intact | Touche | Coule
 type navire = {nom:nom_navire; coord : (int*int*etat_navire) list}
 type list_navire = navire list
