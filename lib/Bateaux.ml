@@ -1,6 +1,7 @@
 open Plateaux
 
 type nom_navire = Cuirasse | Croisseur | Torpilleur | SousMarin | PorteAvion
+
 type etat_navire = Intact | Touche | Coule
 type navire = {nom:nom_navire; coord : (int*int*etat_navire) list}
 type list_navire = navire list
@@ -10,14 +11,14 @@ type list_navire = navire list
 let rec verif_coord list_c plateau= 
     match list_c with
     | [] -> true
-    | (x, y)::q -> if plateau.(y).(x) == Vide  then verif_coord q plateau else false
+    | (x, y)::q -> if plateau.(x).(y) == Vide  then verif_coord q plateau else false
 
 (* Placer des bateaux sur le plateau *)
 let placer_bateaux plateau list_coords  = 
   let rec place l = 
     match l with
     | [] -> ()
-    | (x, y)::q -> plateau.(y).(x) <- Bateau; place q
+    | (x, y)::q -> plateau.(x).(y) <- Bateau; place q
   in if not (verif_coord list_coords plateau) then print_endline "Impossible de placer le bateau" else place list_coords;print_endline "Bateau placé"
 
 let rec make_pos_list x y taille orientation = 
