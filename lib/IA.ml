@@ -1,6 +1,5 @@
-open Plateaux
-open Regle
 
+(*
 let rec ajoute_navire_aleatoire liste_navire taille = 
   if taille = 0 then liste_navire else 
   let x = Random.int 10 in
@@ -15,3 +14,4 @@ let rec ajoute_navire_aleatoire liste_navire taille =
   in
   let navire = make_navire nom taille x y orientation in
   ajoute_navire_aleatoire (navire::liste_navire) (taille-1)
+  *)
