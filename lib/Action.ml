@@ -6,21 +6,30 @@ open Outils
 let tirer plateau x y =
   let taille = Array.length plateau in
   if x < 0 || x >= taille || y < 0 || y >= taille then
-    print_endline "Coordonnées invalides, réessayez."
+    (print_endline "Coordonnées invalides, réessayez.";Some(-1)) (*Cas ou le joueur doit recommencer*)
   else
     match plateau.(x).(y) with
     | Vide ->
         print_endline "Manqué!";
-        plateau.(x).(y) <- Rate
-    | Bateau ->
-        print_endline "Touché!";
-        plateau.(x).(y) <- Touche
-    | Touche ->
-        print_endline "Déjà touché."
+        plateau.(x).(y) <- Rate;
+        None
     | Coule ->
-        print_endline "Déjà coulé."
+        print_endline "Déjà coulé.";
+        Some(-1) (*Cas ou le joueur doit recommencer*)
     | Rate ->
-        print_endline "Déjà tiré ici."
+        print_endline "Déjà tiré ici.";
+        Some(-1) (*Cas ou le joueur doit recommencer*)
+    | Navire (id, etat) ->
+        match etat with
+        | Intact ->
+            print_endline "Touché!";
+            plateau.(x).(y) <- Navire (id, Touche);
+            Some(id)
+        | Touche ->
+            print_endline "Déjà touché.";
+            Some(-1) (*Cas ou le joueur doit recommencer*)
+
+            
 
   let demander_placement nom taille plateau =
     let rec demander_valides () =
@@ -34,9 +43,9 @@ let tirer plateau x y =
           let y = int_of_string y_str in
           print_endline "Entrez l'orientation (h pour horizontal, v pour vertical) :";
           let orientation = read_line () in
-          if coordonnees_valides x y taille orientation then
+          if coordonnees_valides x y taille orientation plateau_taille then
             let positions = make_pos_list x y taille orientation in
-            let coords = List.map (fun (x, y, _) -> (x, y)) positions in
+            let coords = List.map (fun (x, y) -> (x, y)) positions in
             if verif_coord coords plateau then
               positions (* Coordonnées valides et bateau peut être placé *)
             else begin
@@ -55,15 +64,16 @@ let tirer plateau x y =
 
 
 (* Placer tous les bateaux *)
-let placer_tous_bateaux plateau =
+let placer_tous_bateaux plateau list_bateaux=
     let navires = [
       ("Cuirassé", 1);
-      ("Croiseur", 3);
+      ("Croisseur", 3);
     ] in
-    List.iter (fun (nom, taille) ->
+    List.iter (fun (nom, taille)->
       let coords = demander_placement nom taille plateau in
-      let coords = List.map (fun (x, y, _) -> (x, y)) coords in
-      placer_bateaux plateau coords
+      let coords = List.map (fun (x, y) -> (x, y)) coords in
+      ((placer_bateaux plateau coords !list_bateaux);list_bateaux:=((make_navire nom ((length !list_bateaux)+1) coords))::!list_bateaux)
     ) navires
+
   
   

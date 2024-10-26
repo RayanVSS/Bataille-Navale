@@ -1,1 +1,1 @@
-val jeu : unit -> unit
+val play : unit
