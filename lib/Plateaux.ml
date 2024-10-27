@@ -1,8 +1,10 @@
+open Bateaux
+open Outils
+
 (* Type des cases du plateau *)
 type case =
   | Vide
-  | Bateau
-  | Touche
+  | Navire of int * etat_navire
   | Rate
   | Coule
 
@@ -14,46 +16,32 @@ let plateau_taille = 11
 let creer_plateau taille =
   Array.make_matrix taille taille Vide
 
-(* Affichage du plateau *)
-let afficher_plateau plateau =
-  let taille = Array.length plateau in
-  (* Afficher les indices de colonnes *)
-  print_string "  ";
-  for i = 0 to taille - 1 do
-    Printf.printf "%d " i
-  done;
-  print_newline ();
+let rec verif_coord list_c plateau= 
+  match list_c with
+  | [] -> true
+  | (x, y)::q -> let verif =
+                  match plateau.(x).(y) with
+                  | Vide->verif_coord q plateau 
+                  |_->false
+  in verif
 
-  (* Afficher les lignes du plateau *)
-  Array.iteri (fun i ligne ->
-      Printf.printf "%d " i;
-      Array.iter (fun case ->
-          match case with
-          | Vide -> print_string "🟦"
-          | Bateau -> print_string "🟦"
-          | Touche -> print_string "🟨"
-          | Coule -> print_string "🟥"
-          | Rate -> print_string "⬜"
-        ) ligne;
-      print_newline ()
-    ) plateau
+let placer_bateaux plateau list_coords list_bateaux = 
+let rec place l = 
+  match l with
+  | [] -> ()
+  | (x, y)::q -> plateau.(x).(y) <- Navire (((length list_bateaux)+1,Intact)); place q
+in if (verif_coord list_coords plateau) then (place list_coords;) else ()
 
-(* Affichage du plateau quand tu a gagner  *)
-let afficher_plateau_gagner plateau =
-  let taille = Array.length plateau in
-  (* Afficher les indices de colonnes *)
-  print_string "  ";
-  for i = 0 to taille - 1 do
-    Printf.printf "%d " i
-  done;
-  print_newline ();
+let rec coule list plateau =
+  match list with
+  |(x,y)::q -> plateau.(x).(y) <- Coule ; coule q plateau
+  |_->()
 
-  (* Afficher les lignes du plateau *)
-  Array.iteri (fun i ligne ->
-      Printf.printf "%d " i;
-      Array.iter (fun case ->
-          match case with
-          | _ -> print_string "🟩"
-        ) ligne;
-      print_newline ()
-    ) plateau;print_endline "Tous les bateaux ont été coulés! Victoire!";
+let update_etat list plateau= 
+  let rec verif l=
+    match l with
+    |(x,y)::q-> (match plateau.(x).(y) with
+                |Navire (_,Touche)-> verif q
+                |_->false)
+    |[]-> true
+  in if(verif list) then (coule list plateau) else ()
