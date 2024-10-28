@@ -59,9 +59,11 @@ let parse_coords coords_split =
     match coords_split with
     | [a; b] when est_lettre a.[0] && est_chiffre b -> coords_split
     | [b; a] when est_lettre a.[0] && est_chiffre b -> [a; b]
+    | [a; b] when est_chiffre a && est_chiffre b -> coords_split
+    | [a; b] when est_lettre a.[0] && est_lettre b.[0] -> coords_split
     | _ -> failwith "Format de coordonnées incorrect"
   in
   let coords_split = verifier_et_inverser coords_split in
   match List.map parse_coord coords_split with
   | [a; b] when a >= 0 && a < 26 && b >= 0 -> (a, b)
-  | _ -> failwith "Format de coordonnées incorrect"
+  | _ -> failwith "Format de coordonnées incorrectf"
