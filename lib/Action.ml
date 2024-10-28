@@ -68,7 +68,7 @@ let tirer plateau x y =
 
 
 (* Placer tous les bateaux *)
-let placer_tous_bateaux plateau list_bateaux=
+let rec placer_tous_bateaux plateau list_bateaux=
     let navires = [
       ("Cuirassé", 1);
       ("Croisseur", 3);
@@ -77,7 +77,13 @@ let placer_tous_bateaux plateau list_bateaux=
       let coords = demander_placement nom taille plateau in
       let coords = List.map (fun (x, y) -> (x, y)) coords in
       ((placer_bateaux plateau coords !list_bateaux);list_bateaux:=((make_navire nom ((length !list_bateaux)+1) coords))::!list_bateaux)
-    ) navires
+    ) navires ; 
+    afficher_plateau_placement plateau;
+    print_endline "(R pour replacer, sinon appuyer sur entrée) :";
+    let orientation = read_line () in
+    if orientation =  "r" || orientation = "R" then placer_tous_bateaux (reset_plateaux plateau) list_bateaux
+    else ()
+    
 
   
   
