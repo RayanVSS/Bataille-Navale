@@ -23,3 +23,47 @@ let coordonnees_valides x y taille_bateau orientation plateau_taille =
   else if orientation = "h" && (x + taille_bateau > plateau_taille) then false
   else if orientation = "v" && (y + taille_bateau > plateau_taille) then false
   else true
+
+  let clearT () =
+    let command =
+      if Sys.os_type = "Win32" then "cls"
+      else "clear"
+    in
+    ignore (Sys.command command)
+
+let parse_coord coord_str =
+  try
+    int_of_string coord_str  
+  with Failure _ ->
+    if String.length coord_str = 1 then
+      let c = coord_str.[0] in
+      if c >= 'a' && c <= 'z' then
+        (Char.code c) - (Char.code 'a') 
+      else if c >= 'A' && c <= 'Z' then
+        (Char.code c) - (Char.code 'A')  
+      else
+        failwith "Coordonnée invalide"
+    else
+      failwith "Coordonnée invalide"
+
+let parse_coords coords_split =
+  let est_lettre c =
+    (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z')
+  in
+  let est_chiffre s =
+    try
+      ignore (int_of_string s); true
+    with Failure _ -> false
+  in
+  let verifier_et_inverser coords_split =
+    match coords_split with
+    | [a; b] when est_lettre a.[0] && est_chiffre b -> coords_split
+    | [b; a] when est_lettre a.[0] && est_chiffre b -> [a; b]
+    | [a; b] when est_chiffre a && est_chiffre b -> coords_split
+    | [a; b] when est_lettre a.[0] && est_lettre b.[0] -> coords_split
+    | _ -> failwith "Format de coordonnées incorrect"
+  in
+  let coords_split = verifier_et_inverser coords_split in
+  match List.map parse_coord coords_split with
+  | [a; b] when a >= 0 && a < 26 && b >= 0 -> (a, b)
+  | _ -> failwith "Format de coordonnées incorrectf"

@@ -2,7 +2,9 @@ open Bateaux
 open Plateaux
 open Action
 open GameView
+open Outils
 
+(* Fonction pour vérifier si tous les bateaux sont coulés *)
 let tous_bateaux_coules plateau =
   let coules = ref true in
   Array.iter (fun ligne ->
@@ -35,8 +37,9 @@ let jeu () =
       let coords_split = String.split_on_char ' ' coords in
       match coords_split with
       | [x_str; y_str] ->
-          let x = int_of_string x_str in
-          let y = int_of_string y_str in
+          let coor = parse_coords [x_str; y_str] in
+          let x = fst coor in
+          let y = snd coor in
           (match tirer plateau x y with
             | Some i ->
                 if i >= 0 then

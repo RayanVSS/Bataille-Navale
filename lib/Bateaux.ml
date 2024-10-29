@@ -20,7 +20,10 @@ let make_navire nom id coord =
 
 (* Créer une liste de coordonnées pour un bateau *)
 let rec make_pos_list x y taille orientation = 
-  if taille=0 then [] else  if orientation="h" then (x, y)::(make_pos_list x (y+1) (taille-1) orientation) else (x, y)::(make_pos_list (x+1) y (taille-1 ) orientation)
+  if taille=0 then [] 
+  else if orientation="h" || orientation="H" then (x, y)::(make_pos_list x (y+1) (taille-1) orientation) 
+  else if orientation="v" || orientation="V" then (x, y)::(make_pos_list (x+1) y (taille-1 ) orientation)
+  else failwith "Orientation invalide"
 
 let rec get_coord id liste = 
   match liste with

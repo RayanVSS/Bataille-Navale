@@ -1,6 +1,9 @@
 open Plateaux
 open Bateaux
 open Outils
+open GameView
+
+(* Fonction pour placer un bateau *)
 
 (* Fonction pour tirer sur une case *)
 let tirer plateau x y =
@@ -32,6 +35,7 @@ let tirer plateau x y =
             
 
   let demander_placement nom taille plateau =
+    afficher_plateau_placement plateau;
     let rec demander_valides () =
       print_endline (Printf.sprintf "Placer le %s (taille: %d)" nom taille);
       print_endline "Entrez les coordonnées de départ (x y) :";
@@ -39,8 +43,8 @@ let tirer plateau x y =
       let coords_split = String.split_on_char ' ' coords in
       match coords_split with
       | [x_str; y_str] -> 
-          let x = int_of_string x_str in
-          let y = int_of_string y_str in
+          let x = parse_coord  x_str in
+          let y = parse_coord y_str in
           print_endline "Entrez l'orientation (h pour horizontal, v pour vertical) :";
           let orientation = read_line () in
           if coordonnees_valides x y taille orientation plateau_taille then
@@ -64,7 +68,7 @@ let tirer plateau x y =
 
 
 (* Placer tous les bateaux *)
-let placer_tous_bateaux plateau list_bateaux=
+let rec placer_tous_bateaux plateau list_bateaux=
     let navires = [
       ("Cuirassé", 1);
       ("Croisseur", 3);
@@ -73,7 +77,13 @@ let placer_tous_bateaux plateau list_bateaux=
       let coords = demander_placement nom taille plateau in
       let coords = List.map (fun (x, y) -> (x, y)) coords in
       ((placer_bateaux plateau coords !list_bateaux);list_bateaux:=((make_navire nom ((length !list_bateaux)+1) coords))::!list_bateaux)
-    ) navires
+    ) navires ; 
+    afficher_plateau_placement plateau;
+    print_endline "(R pour replacer, sinon appuyer sur entrée) :";
+    let orientation = read_line () in
+    if orientation =  "r" || orientation = "R" then placer_tous_bateaux (reset_plateaux plateau) list_bateaux
+    else ()
+    
 
   
   
