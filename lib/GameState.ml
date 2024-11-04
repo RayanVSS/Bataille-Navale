@@ -39,6 +39,10 @@ let tous_bateaux_coules plateau =
 
 (* Fonction principale du jeu *)
 let jeu () =
+  let x = afficher_Menu () in
+  clearT ();
+  if x = "0" then 
+  (* Initialisation du jeu *)
   let () = print_endline "Bienvenue dans le jeu de bataille navale!" in
   (* Création du plateau *)
   let liste_bateaux_joueur_1 = ref [] in
@@ -52,6 +56,10 @@ let jeu () =
   print_endline "Au tour du joueur 2 de placer ces bateaux";
   placer_tous_bateaux plateau_joueur_2 liste_bateaux_joueur_2;
   clearT ();
+
+
+
+  
   
   (* Boucle principale du jeu *)
   let rec boucle () =
