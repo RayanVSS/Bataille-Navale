@@ -1,4 +1,10 @@
-type nom_navire = Cuirasse | Croisseur | Torpilleur | SousMarin | PorteAvion
+type nom_navire =
+    Cuirasse
+  | Croiseur
+  | Torpilleur
+  | SousMarin
+  | PorteAvion
+  | ContreTorpilleur
 type etat_navire = Intact | Touche
 type navire = { nom : nom_navire; id : int; coord : (int * int) list; }
 type list_navire = navire list

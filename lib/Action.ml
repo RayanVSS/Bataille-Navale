@@ -2,6 +2,7 @@ open Plateaux
 open Bateaux
 open Outils
 open GameView
+open Regle
 
 (* Fonction pour placer un bateau *)
 
@@ -69,19 +70,20 @@ let tirer plateau x y =
 
 (* Placer tous les bateaux *)
 let rec placer_tous_bateaux plateau list_bateaux=
-    let navires = [
-      ("Cuirassé", 1);
-      ("Croisseur", 3);
-    ] in
-    List.iter (fun (nom, taille)->
-      let coords = demander_placement nom taille plateau in
-      let coords = List.map (fun (x, y) -> (x, y)) coords in
-      ((placer_bateaux plateau coords !list_bateaux);list_bateaux:=((make_navire nom ((length !list_bateaux)+1) coords))::!list_bateaux)
+    let navires = navire_plateau_1 in
+    List.iter (fun (nom, nb ,taille)-> 
+      let rec place n = 
+        match n with
+        | 0 -> ()
+        | _ -> let coords = demander_placement nom taille plateau in 
+                let coords = List.map (fun (x, y) -> (x, y)) coords in
+                ((placer_bateaux plateau coords !list_bateaux);list_bateaux:=((make_navire nom ((length !list_bateaux)+1) coords))::!list_bateaux); place (n-1)
+      in place nb ;
     ) navires ; 
     afficher_plateau_placement plateau;
     print_endline "(R pour replacer, sinon appuyer sur entrée) :";
-    let orientation = read_line () in
-    if orientation =  "r" || orientation = "R" then placer_tous_bateaux (reset_plateaux plateau) list_bateaux
+    let  orientation = read_line () in
+    if orientation =  "r" || orientation = "R" then placer_tous_bateaux (reset_plateaux plateau list_bateaux) list_bateaux
     else ()
     
 

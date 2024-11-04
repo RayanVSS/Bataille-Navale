@@ -46,6 +46,9 @@ let update_etat list plateau=
     |[]-> true
   in if(verif list) then (coule list plateau) else ()
 
-  let reset_plateaux plateau =
-    Array.map (fun row -> Array.map (fun _ -> Vide) row) plateau
+  let reset_plateaux plateau list_navire =
+    begin
+    list_navire := [];
+    Array.map (fun row -> Array.map (fun _ -> Vide) row) plateau;
+    end
   

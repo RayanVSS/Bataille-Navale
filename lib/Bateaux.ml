@@ -1,4 +1,4 @@
-type nom_navire = Cuirasse | Croisseur | Torpilleur | SousMarin | PorteAvion
+type nom_navire = Cuirasse | Croiseur | Torpilleur | SousMarin | PorteAvion | ContreTorpilleur
 type etat_navire = Intact | Touche 
 type navire = {nom:nom_navire; id:int; coord : (int*int) list ;}
 type list_navire = navire list
@@ -10,13 +10,13 @@ let make_navire nom id coord =
   let name = 
     match nom with 
       |"Cuirassé"->Cuirasse
-      |"Croisseur"->Croisseur
+      |"Croiseur"->Croiseur
       |"Torpilleur"->Torpilleur
       |"SousMarin"->SousMarin
       |"PorteAvion"->PorteAvion
+      |"ContreTorpilleur"->ContreTorpilleur
       |_->failwith "Nom de navire invalide"
     in {nom=name;id=id; coord=coord;}
-
 
 (* Créer une liste de coordonnées pour un bateau *)
 let rec make_pos_list x y taille orientation = 
