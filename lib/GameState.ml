@@ -60,6 +60,7 @@ let rec jeu () =
       if x = "3" then 
        (afficher_regles ();jeu ())
       else ();
+      if not (x = "0") && not (x = "1") && not (x = "3")  then jeu() else ();
   in menu ();
   (* Initialisation du jeu *)
       let joueur1 = "1" in
@@ -77,6 +78,7 @@ let rec jeu () =
       if joueur2 = "IA" then placer_tous_bateaux_ia plateau_joueur_2 liste_bateaux_joueur_2
       else placer_tous_bateaux plateau_joueur_2 liste_bateaux_joueur_2;
       clearT ();
+
 
 
   
