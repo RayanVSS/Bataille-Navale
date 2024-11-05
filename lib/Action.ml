@@ -83,7 +83,7 @@ let rec placer_tous_bateaux plateau list_bateaux=
     afficher_plateau_placement plateau;
     print_endline "(R pour replacer, sinon appuyer sur entrée) :";
     let  orientation = read_line () in
-    if orientation =  "r" || orientation = "R" then placer_tous_bateaux (reset_plateaux plateau list_bateaux) list_bateaux
+    if orientation =  "r" || orientation = "R" then (reset_plateaux plateau list_bateaux ; placer_tous_bateaux plateau list_bateaux)
     else ()
     
 

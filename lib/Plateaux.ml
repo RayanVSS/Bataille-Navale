@@ -47,8 +47,12 @@ let update_etat list plateau=
   in if(verif list) then (coule list plateau) else ()
 
   let reset_plateaux plateau list_navire =
-    begin
-    list_navire := [];
-    Array.map (fun row -> Array.map (fun _ -> Vide) row) plateau;
-    end
-  
+    let rec reset l = 
+      match l with
+      |[]->()
+      |n1::n -> let rec reset_coord l =
+        match l  with
+        |(x,y)::q -> plateau.(x).(y) <- Vide; reset_coord q
+        |[]->()
+      in reset_coord n1.coord; reset n
+    in reset !list_navire; list_navire:= [];
