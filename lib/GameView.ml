@@ -1,5 +1,6 @@
 open Bateaux
 open Plateaux
+open Outils
 
 (* Affichage du plateau *)
 
@@ -27,6 +28,8 @@ let afficher_plateau plateau =
       print_newline ()
     ) plateau
 
+let afficher_espace () =
+  print_endline "-----------------------------------"
 (* Affichage du plateau quand tu a gagner  *)
 let afficher_plateau_gagner plateau =
   let taille = Array.length plateau in

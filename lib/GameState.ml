@@ -4,6 +4,7 @@ open Action
 open GameView
 open Outils
 open IA
+open Regle
 
 (* Fonction pour vérifier si tous les bateaux sont coulés *)
 
@@ -41,56 +42,58 @@ let tours_joueur j plateau_joueur liste_bateaux =
 
 let tours_ia plateau_joueur liste_bateaux =
   print_endline "Tour de l'IA";
-  afficher_plateau plateau_joueur;
   let i = ia_tirer plateau_joueur in
   if i >= 0 then let list = (get_coord i !liste_bateaux) in (
-    if(verif_coule list plateau_joueur) then (coule list plateau_joueur;  reset_tirs () ;print_endline "L'IA a coulé un bateau!";)
+    if(verif_coule list plateau_joueur) then (coule list plateau_joueur;  reset_tirs () ;afficher_plateau plateau_joueur; print_endline "L'IA a coulé un bateau!";)
     else print_endline "L'IA a touché un bateau!"; true;)
-  else false
+  else (print_endline "L'IA a raté!"; false;)
 
-(* Fonction pour placer tous les bateaux d'un joueur *)
 
 (* Fonction principale du jeu *)
 let rec jeu () =
+  (* Affichage du menu *)
   let x = afficher_Menu () in
-  clearT ();
-  if x = "3" then 
-    begin
-    print_endline "Règles de Bataille Navale :";
-    print_endline "1. Chaque joueur place ses bateaux sur son plateau.";
-    print_endline "2. Les joueurs tirent tour à tour en choisissant des coordonnées.";
-    print_endline "3. Le but est de couler tous les bateaux de l'adversaire.";
-    print_endline "4. Le premier joueur à couler tous les bateaux de l'autre gagne la partie.";
-    let _ = read_line () in 
-    jeu ();
-    end
-  else if x = "0" then 
   (* Initialisation du jeu *)
   let () = print_endline "Bienvenue dans le jeu de bataille navale!" in
-  (* Création du plateau *)
-  let liste_bateaux_joueur_1 = ref [] in
-  let liste_bateaux_joueur_2 = ref [] in
-  let plateau_joueur_1 = creer_plateau plateau_taille in
-  let plateau_joueur_2 = creer_plateau plateau_taille in
-  (* Placement des bateaux *)
-  print_endline "Au tour du joueur 1 de placer ces bateaux";
-  placer_tous_bateaux plateau_joueur_1 liste_bateaux_joueur_1;
-  clearT ();
-  print_endline "Au tour du joueur 2 de placer ces bateaux";
-  placer_tous_bateaux plateau_joueur_2 liste_bateaux_joueur_2;
-  clearT ();
+  let menu () =
+      clearT ();
+      if x = "3" then 
+       (afficher_regles ();jeu ())
+      else ();
+  in menu ();
+  (* Initialisation du jeu *)
+      let joueur1 = "1" in
+      let joueur2 = if(int_of_string x == 1)then "IA" else "2" in
+
+      let liste_bateaux_joueur_1 = ref [] in
+      let liste_bateaux_joueur_2 = ref [] in
+      let plateau_joueur_1 = creer_plateau plateau_taille in
+      let plateau_joueur_2 = creer_plateau plateau_taille in
+      (* Placement des bateaux *)
+      print_endline ("Au tour du joueur " ^ joueur1 ^" de placer ces bateaux");
+      placer_tous_bateaux plateau_joueur_1 liste_bateaux_joueur_1;
+      clearT ();
+      print_endline ("Au tour du joueur "^joueur2^" de placer ces bateaux");
+      if joueur2 = "IA" then placer_tous_bateaux_ia plateau_joueur_2 liste_bateaux_joueur_2
+      else placer_tous_bateaux plateau_joueur_2 liste_bateaux_joueur_2;
+      clearT ();
 
 
-  
   
   (* Boucle principale du jeu *)
-  let rec boucle x =
+  let rec boucle j =
     if tous_bateaux_coules plateau_joueur_1 then
       (afficher_plateau_gagner plateau_joueur_1;
-      print_endline "Tous les bateaux du joueur 1 ont été coulés! Le joueur 2 a gagne!";)
+      print_endline ("Tous les bateaux du joueur "^joueur1^" ont été coulés! Le joueur "^joueur2^" a gagne!"))
+    else if tous_bateaux_coules plateau_joueur_2 then
+      (afficher_plateau_gagner plateau_joueur_2;
+        print_endline ("Tous les bateaux du joueur "^joueur2^" ont été coulés! Le joueur "^joueur1^" a gagne!"))
     else 
-      if x==1 then if (afficher_plateau plateau_joueur_2 ; (tours_joueur x plateau_joueur_2 liste_bateaux_joueur_2)) then boucle 1 else boucle 2
-        else if x==2 then if (afficher_plateau plateau_joueur_1 ;(tours_joueur x plateau_joueur_1 liste_bateaux_joueur_1))then boucle 2 else boucle 1
+      if j==1 then if (afficher_plateau plateau_joueur_2 ; (tours_joueur j plateau_joueur_2 liste_bateaux_joueur_2)) then boucle 1 else boucle 2
+        else if j==2 then if joueur2=="IA" then 
+          if (tours_ia plateau_joueur_1 liste_bateaux_joueur_1) then boucle 2 else (afficher_plateau plateau_joueur_1 ; afficher_espace (); boucle 1)
+          else
+          if (afficher_plateau plateau_joueur_1 ;(tours_joueur j plateau_joueur_1 liste_bateaux_joueur_1))then boucle 2 else boucle 1
   in
   boucle 1;
 
