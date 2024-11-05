@@ -10,7 +10,7 @@ test:
     - opam init -y --disable-sandboxing
     - opam switch create 4.14.0
     - eval $(opam env)
-    - opam install dune -y
+    - opam install dune qcheck -y  
   script:
     - dune build
     - dune runtest
