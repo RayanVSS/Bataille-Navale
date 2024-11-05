@@ -3,23 +3,23 @@ open Bateaux
 open Outils
 open Plateaux
 
-
-let dernier_tir = ref (0,0,true)
-
-let rec ajoute_bateau_alea nom taille plateau liste_navire = 
-  let x = Random.int plateau_taille in
-  let y = Random.int plateau_taille in
-  let orientation = if Random.int 2 = 0 then "h" else "v" in
-  let coords = make_pos_list x y taille orientation in
-    if coordonnees_valides x y taille orientation plateau_taille then
-      let coords = List.map (fun (x, y) -> (x, y)) coords in
-      if verif_coord coords plateau then
-        ((placer_bateaux plateau coords !liste_navire);liste_navire:=((make_navire nom ((length !liste_navire)+1) coords)::!liste_navire))
-      else ajoute_bateau_alea nom taille plateau  liste_navire
-    else ajoute_bateau_alea nom taille plateau  liste_navire
+let ajoute_bateau_alea nom taille plateau liste_navire =
+  let rec placer () = 
+      Random.self_init ();
+      let x = Random.int plateau_taille-1 in
+      let y = Random.int plateau_taille-1 in
+      let orientation = if Random.int 2 = 0 then "h" else "v" in
+      if coordonnees_valides x y taille orientation plateau_taille then
+        
+        let coords =( print_int x; print_string ", "; print_int y; print_string ", "; print_int taille; print_string ", "; print_string orientation; print_newline();make_pos_list x y taille orientation) in
+        if verif_coord coords plateau then (
+          placer_bateaux plateau coords !liste_navire;
+          liste_navire := (make_navire nom ((length !liste_navire) + 1) coords) :: !liste_navire;
+          ) else placer () else placer ()
+in placer ()
 
     
-let ajoute_bateaux_aleatoire liste_navire plateau = 
+let placer_tous_bateaux_ia plateau liste_navire = 
   let navires = navire_plateau_1 in
   List.iter (fun (nom, nb, taille) -> 
     let rec place n = 
@@ -30,37 +30,52 @@ let ajoute_bateaux_aleatoire liste_navire plateau =
   ) navires;()
 
 
-let touche_environ plateau x y =
-  let rec touche l = 
-    match l with
-    |[]->()
-    |(x,y)::q -> match plateau.(x).(y) with
-                |Vide -> plateau.(x).(y) <- Rate 
-                |Rate -> touche q
-                |Coule -> touche q
-                |Navire (id,etat) -> match etat with
-                                    |Touche -> touche q
-                                    |Intact -> plateau.(x).(y) <- Navire (id,Touche)
-  in let list = [(x+1,y);(x-1,y);(x,y+1);(x,y-1)] in touche list
+  let tirs_effectues = ref []
 
-  (*
-let rec touche_aleatoire plateau  = 
-  match !dernier_tir with
-  |(x,y,true) -> 
-    let alea_x = if (Random.int 2)==1 then 1 else -1 in 
-    let alea_y = if
-    if (Random.int 2)==1 then 
+  let premier_touche = ref None
+  let dernier_touche = ref None
 
-  |(x,y,false)->    
-    let newx = Random.int plateau_taille in
-    let newy = Random.int plateau_taille in
-    match plateau.(x).(y) with
-    |Vide -> plateau.(x).(y) <- Rate
-    |Rate -> touche_aleatoire plateau plateau_taille
-    |Coule -> touche_aleatoire plateau plateau_taille
-    |Navire (id,etat) -> match etat with
-                        |Touche -> touche_aleatoire plateau plateau_taille
-                        |Intact -> plateau.(x).(y) <- Navire (id,Touche)
-          *)
+  let reset_tirs () =
+    dernier_touche := None
+  
+  let rec tir_aleatoire () =
+    Random.self_init ();
+    let x = Random.int plateau_taille in
+    let y = Random.int plateau_taille in
+    if List.mem (x, y) !tirs_effectues then tir_aleatoire ()
+    else (x, y)
 
+  let ia_tirer plateau =
+    let x, y =
+      let rec tire_deja_touche ()=
+        match !dernier_touche with
+        | Some (dx, dy) ->
+            let adjacents = [(dx+1, dy); (dx-1, dy); (dx, dy+1); (dx, dy-1)] in
+            let valid_adj = List.filter (fun (x, y) ->
+              x >= 0 && x < plateau_taille &&
+              y >= 0 && y < plateau_taille &&
+              not (List.mem (x, y) !tirs_effectues)
+            ) adjacents in
+            if valid_adj = [] then (
+              dernier_touche := !premier_touche;
+              tire_deja_touche ()
+            ) else
+              (Random.self_init ();
+              get (Random.int (List.length valid_adj)) valid_adj )
+        | None -> tir_aleatoire ()
+      in tire_deja_touche ()
+    in
+    tirs_effectues := (x, y) :: !tirs_effectues;
+    let resultat =
+      match plateau.(x).(y) with
+      | Vide -> plateau.(x).(y) <- Rate;-1
+      | Coule -> -1
+      | Rate -> -1
+      | Navire (id, etat) ->
+          match etat with
+          | Intact -> plateau.(x).(y) <- Navire (id, Touche);id
+          | Touche -> -1
+    in
+    if resultat != -1 then (dernier_touche := Some (x, y);print_endline ("L'IA a tiré en " ^ string_of_int x ^ " " ^ string_of_int y ^ " et a touche .");resultat)
+    else -1;
     

@@ -37,18 +37,23 @@ let rec coule list plateau =
   |(x,y)::q -> plateau.(x).(y) <- Coule ; coule q plateau
   |_->()
 
-let update_etat list plateau= 
-  let rec verif l=
-    match l with
-    |(x,y)::q-> (match plateau.(x).(y) with
-                |Navire (_,Touche)-> verif q
+let rec verif_coule l plateau=
+  match l with
+  |(x,y)::q-> (match plateau.(x).(y) with
+                |Navire (_,Touche)-> verif_coule q plateau
                 |_->false)
-    |[]-> true
-  in if(verif list) then (coule list plateau) else ()
+  |[]-> true
+
+let update_etat list plateau=  
+  if(verif_coule list plateau) then (coule list plateau) else ()
 
   let reset_plateaux plateau list_navire =
-    begin
-    list_navire := [];
-    Array.map (fun row -> Array.map (fun _ -> Vide) row) plateau;
-    end
-  
+    let rec reset l = 
+      match l with
+      |[]->()
+      |n1::n -> let rec reset_coord l =
+        match l  with
+        |(x,y)::q -> plateau.(x).(y) <- Vide; reset_coord q
+        |[]->()
+      in reset_coord n1.coord; reset n
+    in reset !list_navire; list_navire:= [];
