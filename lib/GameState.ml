@@ -3,8 +3,10 @@ open Plateaux
 open Action
 open GameView
 open Outils
+open IA
 
 (* Fonction pour vérifier si tous les bateaux sont coulés *)
+
 let tous_bateaux_coules plateau =
   let coules = ref true in
   Array.iter (fun ligne ->
@@ -17,7 +19,7 @@ let tous_bateaux_coules plateau =
     ) plateau;
   !coules
 
-  let tours_joueur j plateau_joueur liste_bateaux = 
+let tours_joueur j plateau_joueur liste_bateaux = 
     print_endline ("Au tour du joueur "^ string_of_int j ^" de jouer");
     print_endline "Entrez les coordonnées de tir (x y) :";
     let coords = read_line () in
@@ -37,6 +39,16 @@ let tous_bateaux_coules plateau =
         (print_endline "Entrée invalide, réessayez.";
         true;) (* Répéter en cas d'erreur *)
 
+let tours_ia plateau_joueur liste_bateaux =
+  print_endline "Tour de l'IA";
+  let i = ia_tirer plateau_joueur in
+  if i >= 0 then let list = (get_coord i !liste_bateaux) in (
+    if(verif_coule list plateau_joueur) then (coule list plateau_joueur;  reset_tirs () ;print_endline "L'IA a coulé un bateau!";)
+    else print_endline "L'IA a touché un bateau!"; true;)
+  else false
+
+(* Fonction pour placer tous les bateaux d'un joueur *)
+
 (* Fonction principale du jeu *)
 let jeu () =
   let () = print_endline "Bienvenue dans le jeu de bataille navale!" in
@@ -54,18 +66,16 @@ let jeu () =
   clearT ();
   
   (* Boucle principale du jeu *)
-  let rec boucle () =
+  let rec boucle x =
     if tous_bateaux_coules plateau_joueur_1 then
       (afficher_plateau_gagner plateau_joueur_1;
-      print_endline "Tous les bateaux du joueur 1  ont été coulés! Le joueur 2 a gagne!";)
+      print_endline "Tous les bateaux du joueur 1 ont été coulés! Le joueur 2 a gagne!";)
     else if tous_bateaux_coules plateau_joueur_2 then
         (afficher_plateau_gagner plateau_joueur_2;
         print_endline "Tous les bateaux du joueur 2 ont été coulés! Le joueur 1 a gagne!";)
     else 
-      let rec rejouer x verif =
-        if x==1 then if verif then (afficher_plateau plateau_joueur_2 ; rejouer x (tours_joueur x plateau_joueur_2 liste_bateaux_joueur_2)) else (afficher_plateau plateau_joueur_1 ; rejouer (x+1) (tours_joueur (x+1) plateau_joueur_1 liste_bateaux_joueur_1))
-      else if x==2 then if verif then (afficher_plateau plateau_joueur_1 ; rejouer x (tours_joueur x plateau_joueur_1 liste_bateaux_joueur_1)) else boucle ()
-    in afficher_plateau plateau_joueur_2 ; rejouer 1 (tours_joueur 1 plateau_joueur_2 liste_bateaux_joueur_2)
+        if x==1 then if (afficher_plateau plateau_joueur_2 ; (tours_joueur x plateau_joueur_2 liste_bateaux_joueur_2)) then boucle 1 else boucle 2
+        else if x==2 then if (afficher_plateau plateau_joueur_1 ;(tours_joueur x plateau_joueur_1 liste_bateaux_joueur_1))then boucle 2 else boucle 1
   in
-  boucle ();
+  boucle 1;
 
