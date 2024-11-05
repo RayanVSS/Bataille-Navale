@@ -70,7 +70,7 @@ let tirer plateau x y =
 
 (* Placer tous les bateaux *)
 let rec placer_tous_bateaux plateau list_bateaux=
-    let navires = navire_plateau_1 in
+    let navires = navire_plateau_2 in
     List.iter (fun (nom, nb ,taille)-> 
       let rec place n = 
         match n with
