@@ -18,11 +18,9 @@ let rec length liste =
   |_::q->1+(length q)
 
 let coordonnees_valides x y taille_bateau orientation plateau_taille =
-  print_int x; print_string ", "; print_int y; print_string ", "; print_int taille_bateau; print_string ", "; print_int plateau_taille; print_newline();
   if x < 0 || y < 0 || x >= plateau_taille || y >= plateau_taille then false
-  else if orientation = "h" && (x + taille_bateau > plateau_taille) then false
-  else if orientation = "v" && (y + taille_bateau > plateau_taille) then false
-  else true
+  else if orientation = "h" then  (y + taille_bateau < plateau_taille)
+  else (x + taille_bateau < plateau_taille ) 
 
   let clearT () =
     let command =

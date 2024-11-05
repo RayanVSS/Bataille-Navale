@@ -41,6 +41,7 @@ let tours_joueur j plateau_joueur liste_bateaux =
 
 let tours_ia plateau_joueur liste_bateaux =
   print_endline "Tour de l'IA";
+  afficher_plateau plateau_joueur;
   let i = ia_tirer plateau_joueur in
   if i >= 0 then let list = (get_coord i !liste_bateaux) in (
     if(verif_coule list plateau_joueur) then (coule list plateau_joueur;  reset_tirs () ;print_endline "L'IA a coulé un bateau!";)
@@ -64,17 +65,14 @@ let jeu () =
   print_endline "Au tour du joueur 2 de placer ces bateaux";
   placer_tous_bateaux plateau_joueur_2 liste_bateaux_joueur_2;
   clearT ();
-  
+
   (* Boucle principale du jeu *)
   let rec boucle x =
     if tous_bateaux_coules plateau_joueur_1 then
       (afficher_plateau_gagner plateau_joueur_1;
       print_endline "Tous les bateaux du joueur 1 ont été coulés! Le joueur 2 a gagne!";)
-    else if tous_bateaux_coules plateau_joueur_2 then
-        (afficher_plateau_gagner plateau_joueur_2;
-        print_endline "Tous les bateaux du joueur 2 ont été coulés! Le joueur 1 a gagne!";)
     else 
-        if x==1 then if (afficher_plateau plateau_joueur_2 ; (tours_joueur x plateau_joueur_2 liste_bateaux_joueur_2)) then boucle 1 else boucle 2
+      if x==1 then if (afficher_plateau plateau_joueur_2 ; (tours_joueur x plateau_joueur_2 liste_bateaux_joueur_2)) then boucle 1 else boucle 2
         else if x==2 then if (afficher_plateau plateau_joueur_1 ;(tours_joueur x plateau_joueur_1 liste_bateaux_joueur_1))then boucle 2 else boucle 1
   in
   boucle 1;

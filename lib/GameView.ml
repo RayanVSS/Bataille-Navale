@@ -1,11 +1,9 @@
 open Bateaux
 open Plateaux
-open Outils
 
 (* Affichage du plateau *)
 
 let afficher_plateau plateau =
-  clearT ();
   let taille = Array.length plateau in
   (* Afficher les indices de colonnes *)
   print_string "  ";
