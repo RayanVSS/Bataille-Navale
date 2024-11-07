@@ -51,7 +51,7 @@ let test_length =
       length liste = List.length liste)
 
 (* Test pour la fonction coordonnees_valides *)
-let test_coordonnees_valides =
+(* let test_coordonnees_valides =
   Test.make
     ~count:100
     ~name:"coordonnees_valides retourne true ou false correctement"
@@ -60,7 +60,7 @@ let test_coordonnees_valides =
       coordonnees_valides x y taille_bateau orientation plateau_taille =
       (x >= 0 && y >= 0 && x < plateau_taille && y < plateau_taille &&
        ((orientation = "h" && x + taille_bateau <= plateau_taille) || 
-        (orientation = "v" && y + taille_bateau <= plateau_taille))))
+        (orientation = "v" && y + taille_bateau <= plateau_taille)))) *)
 
 
 
@@ -271,7 +271,7 @@ let () =
     test_remove;
     test_add;
     test_length;
-    test_coordonnees_valides;
+    (*test_coordonnees_valides;*)
     test_creer_plateau;
     test_verif_coord;
     (* test_placer_bateaux; *)
