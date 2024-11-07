@@ -5,7 +5,6 @@ open Plateaux
 
 let ajoute_bateau_alea nom taille plateau liste_navire =
   let rec placer () = 
-      Random.self_init ();
       let x = Random.int plateau_taille-1 in
       let y = Random.int plateau_taille-1 in
       let orientation = if Random.int 2 = 0 then "h" else "v" in
@@ -39,7 +38,6 @@ let placer_tous_bateaux_ia plateau liste_navire =
     dernier_touche := None
   
   let rec tir_aleatoire () =
-    Random.self_init ();
     let x = Random.int plateau_taille in
     let y = Random.int plateau_taille in
     if List.mem (x, y) !tirs_effectues then tir_aleatoire ()
@@ -60,8 +58,7 @@ let placer_tous_bateaux_ia plateau liste_navire =
               dernier_touche := !premier_touche;
               tire_deja_touche ()
             ) else
-              (Random.self_init ();
-              get (Random.int (List.length valid_adj)) valid_adj )
+              (get (Random.int (List.length valid_adj)) valid_adj )
         | None -> tir_aleatoire ()
       in tire_deja_touche ()
     in
