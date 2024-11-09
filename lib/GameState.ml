@@ -51,6 +51,8 @@ let tours_ia plateau_joueur liste_bateaux =
 
 (* Fonction principale du jeu *)
 let rec jeu () =
+  (* Initialisation de la random seed *)
+   Random.self_init ();
   (* Affichage du menu *)
   let x = afficher_Menu () in
   (* Initialisation du jeu *)
