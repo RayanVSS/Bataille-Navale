@@ -33,8 +33,7 @@ let tirer plateau x y =
             print_endline "Déjà touché.";
             Some(-1) (*Cas ou le joueur doit recommencer*)
 
-            
-
+  
   let demander_placement nom taille plateau =
     afficher_plateau_placement plateau;
     let rec demander_valides () =
@@ -42,8 +41,9 @@ let tirer plateau x y =
       print_endline "Entrez les coordonnées de départ (x y) :";
       let coords = read_line () in
       let coords_split = String.split_on_char ' ' coords in
-      match coords_split with
-      | [x_str; y_str] -> 
+      if (iscoordonee coords_split) then
+        match coords_split with
+        | [x_str;y_str]-> 
           let x = parse_coord  x_str in
           let y = parse_coord y_str in
           print_endline "Entrez l'orientation (h pour horizontal, v pour vertical) :";
@@ -61,9 +61,12 @@ let tirer plateau x y =
             print_endline "Les coordonnées ou l'orientation sont invalides, veuillez réessayer.";
             demander_valides () (* Redemander placement *)
           end
-      | _ ->
-          print_endline "Entrée invalide, réessayez.";
-          demander_valides () (* Redemander placement *)
+        | _ ->
+            print_endline "Entrée invalide, réessayez.";
+            demander_valides () (* Redemander placement *)
+      else 
+        (print_endline "Entrée invalide, réessayez.";
+        demander_valides ()) (* Redemander placement *)
     in
     demander_valides ()
 

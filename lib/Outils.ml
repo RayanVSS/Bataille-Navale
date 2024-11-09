@@ -20,7 +20,8 @@ let rec length liste =
 let coordonnees_valides x y taille_bateau orientation plateau_taille =
   if x < 0 || y < 0 || x >= plateau_taille || y >= plateau_taille then false
   else if orientation = "h" then  (y + taille_bateau < plateau_taille)
-  else (x + taille_bateau < plateau_taille ) 
+  else if orientation= "v" then (x + taille_bateau < plateau_taille ) 
+  else false
 
   let clearT () =
     let command =
@@ -28,7 +29,7 @@ let coordonnees_valides x y taille_bateau orientation plateau_taille =
       else "clear"
     in
     ignore (Sys.command command)
-
+    
 let parse_coord coord_str =
   try
     int_of_string coord_str  
@@ -65,3 +66,11 @@ let parse_coords coords_split =
   match List.map parse_coord coords_split with
   | [a; b] when a >= 0 && a < 26 && b >= 0 -> (a, b)
   | _ -> failwith "Format de coordonnées incorrectf"
+
+  let iscoordonee coords = 
+    match coords with
+    | [x_str; y_str] -> 
+      if (String.length x_str = 1 && String.length y_str = 1) then 
+      x_str.[0] >= 'A' && x_str.[0] <= 'Z' && y_str.[0] >= '0' && y_str.[0] <= '9'
+      else false
+    | _ -> false
