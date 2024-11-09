@@ -4,6 +4,7 @@ open Plateaux
 open GameView
 open Bateaux
 open Action
+open GameState
 
 (* Générer des entiers entre 0 et 10 *)
 
@@ -51,7 +52,7 @@ let test_length =
       length liste = List.length liste)
 
 (* Test pour la fonction coordonnees_valides *)
-(* let test_coordonnees_valides =
+let test_coordonnees_valides =
   Test.make
     ~count:100
     ~name:"coordonnees_valides retourne true ou false correctement"
@@ -59,8 +60,8 @@ let test_length =
     (fun (x, y, taille_bateau, orientation, plateau_taille) -> 
       coordonnees_valides x y taille_bateau orientation plateau_taille =
       (x >= 0 && y >= 0 && x < plateau_taille && y < plateau_taille &&
-       ((orientation = "h" && x + taille_bateau <= plateau_taille) || 
-        (orientation = "v" && y + taille_bateau <= plateau_taille)))) *)
+       ((orientation = "h" && y + taille_bateau < plateau_taille) || 
+        (orientation = "v" && x + taille_bateau < plateau_taille)))) 
 
 
 
@@ -88,23 +89,21 @@ let test_verif_coord =
       verif_coord coords_valides plateau)
 
 (* Test pour placer_bateaux *)
-(* 
+
 let test_placer_bateaux =
   Test.make
     ~count:100
-    ~name:"placer_bateaux place les navires aux bonnes coordonnées"
-    (triple (list (pair small_nat small_nat)) (list (pair small_nat small_nat)) (small_nat))
-    (fun (coords, bateaux, taille) ->
-      let plateau = creer_plateau taille in
-      placer_bateaux plateau coords bateaux;
+    ~name:"placer_bateaux place les navires aux coordonnées spécifiées"
+    (pair (list (pair small_nat small_nat)) (list small_nat))
+    (fun (coords, bateaux) ->
+      let plateau = creer_plateau plateau_taille in
+      let coords_valides = List.filter (fun (x, y) -> x < plateau_taille  && y < plateau_taille ) coords in
+      placer_bateaux plateau coords_valides bateaux;
       List.for_all (fun (x, y) ->
-        if List.mem (x, y) coords then
-          match plateau.(x).(y) with
-          | Navire (_, Intact) -> true
-          | _ -> false
-        else
-          plateau.(x).(y) = Vide
-      ) coords)
+        match plateau.(x).(y) with
+        | Navire (_, Intact) -> true
+        | _ -> false
+      ) coords_valides)
 
 (* Test pour coule *)
 let test_coule =
@@ -112,16 +111,17 @@ let test_coule =
     ~count:100
     ~name:"coule change les coordonnées spécifiées en Coule"
     (pair (list (pair small_nat small_nat)) (small_nat))
-    (fun (coords, taille) ->
+    (fun (coords, taille ) ->
       let plateau = creer_plateau taille in
       (* Placer des navires d'abord *)
-      placer_bateaux plateau coords [];
-      coule coords plateau;
+      let coords_valides = List.filter (fun (x, y) -> x < taille  && y < taille ) coords in
+      placer_bateaux plateau coords_valides [];
+      coule coords_valides plateau;
       List.for_all (fun (x, y) ->
         match plateau.(x).(y) with
         | Coule -> true
         | _ -> false
-      ) coords)
+      ) coords_valides)
 
 (* Test pour update_etat *)
 let test_update_etat =
@@ -131,17 +131,18 @@ let test_update_etat =
     (pair (list (pair small_nat small_nat)) (small_nat))
     (fun (coords, taille) ->
       let plateau = creer_plateau taille in
-      placer_bateaux plateau coords [];
+      let coords_valides = List.filter (fun (x, y) -> x < taille && y < taille) coords in
+      placer_bateaux plateau coords_valides [];
       (* Simuler que toutes les parties sont Touche *)
-      List.iter (fun (x, y) -> plateau.(x).(y) <- Navire (1, Touche)) coords;
-      update_etat coords plateau;
-      List.for_all (fun (x, y) ->
+      List.iter (fun (x, y) -> plateau.(x).(y) <- Navire (1, Touche)) coords_valides;
+      update_etat coords_valides plateau &&
+      (List.for_all (fun (x, y) ->
         match plateau.(x).(y) with
         | Coule -> true
         | _ -> false
-      ) coords)
+      ) coords_valides)
+    )
 
- *)
 
 (* Test pour afficher_plateau *)
 let test_afficher_plateau =
@@ -181,30 +182,31 @@ let test_afficher_plateau_placement =
         afficher_plateau_placement plateau;
         true
       with _ -> false)
-(* 
       let test_tous_bateaux_coules =
         Test.make
           ~count:100
           ~name:"tous_bateaux_coules retourne true quand tous les bateaux sont coulés"
-          (list (pair small_nat small_nat))
+          (list (pair small_int small_nat))
           (fun coords ->
             let plateau = creer_plateau plateau_taille in
             (* Placer des bateaux et les marquer comme Coule *)
-            placer_bateaux plateau coords [];
-            coule coords plateau;
-            tous_bateaux_coules plateau = true)
+            let coords_valides = List.filter (fun (x, y) -> x < plateau_taille && y < plateau_taille) coords in
+            placer_bateaux plateau coords_valides [];
+            coule coords_valides plateau;
+            tous_bateaux_coules plateau= true)
       
       let test_tous_bateaux_non_coules =
         Test.make
           ~count:100
-          ~name:"tous_bateaux_coules retourne false quand au moins un bateau est intact"
-          (list (pair small_nat small_nat))
-          (fun coords ->
-            let plateau = creer_plateau plateau_taille in
-            placer_bateaux plateau coords [];
-            (* Ne pas couler les bateaux *)
-            tous_bateaux_coules plateau = false) 
-  *)
+          ~name:"tous_bateaux_coules retourne false quand au moins un bateau est non coulé"
+          (pair small_nat (list (pair small_int small_nat)))
+          (fun (taille, coords) ->
+            let plateau = creer_plateau taille in
+            let coords_valides = List.filter (fun (x, y) -> x < taille && y < taille) coords in
+            placer_bateaux plateau coords_valides [];
+            if coords_valides = [] then
+             true else 
+            tous_bateaux_coules plateau == false)
 
   (* Test pour la fonction tirer *)
 
@@ -239,7 +241,7 @@ let test_tirer_touche =
 let test_tirer_deja_touche =
   Test.make
     ~count:100
-    ~name:"tirer retourne Success(-1,\"Déjà touché.\") quand la case a déjà été touchée"
+    ~name:"tirer retourne Error (\"Déjà touché.\") quand la case a déjà été touchée"
     (pair (int_bound 10) (int_bound 10))
     (fun (x, y) ->
       let plateau = creer_plateau plateau_taille in
@@ -248,7 +250,7 @@ let test_tirer_deja_touche =
       (* Applique la fonction tirer *)
       let result = tirer plateau x y in
       (* Vérifie le résultat *)
-      result = Success(-1,"Déjà touché."))
+      result = Error ("Déjà touché."))
 
 let test_tirer_deja_coule =
   Test.make
@@ -271,17 +273,17 @@ let () =
     test_remove;
     test_add;
     test_length;
-    (*test_coordonnees_valides;*)
+    test_coordonnees_valides;
     test_creer_plateau;
     test_verif_coord;
-    (* test_placer_bateaux; *)
-    (* test_coule; *)
-    (* test_update_etat; *)
+    test_placer_bateaux;
+    test_coule;
+    test_update_etat;
     test_afficher_plateau;
     test_afficher_plateau_gagner;
     test_afficher_plateau_placement;
-    (* test_tous_bateaux_coules; *)
-    (* test_tous_bateaux_non_coules; *)
+    test_tous_bateaux_coules;
+    test_tous_bateaux_non_coules;
     test_tirer_manque;
     test_tirer_touche;
     test_tirer_deja_touche;
