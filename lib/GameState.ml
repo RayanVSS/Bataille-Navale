@@ -20,39 +20,50 @@ let tous_bateaux_coules plateau =
     ) plateau;
   !coules
 
-let tours_joueur j plateau_joueur liste_bateaux = 
+let tours_joueur j plateau_joueur liste_bateaux affichage = 
+    if (!affichage!="") then print_endline !affichage else ();
     print_endline ("Au tour du joueur "^ string_of_int j ^" de jouer");
     print_endline "Entrez les coordonnées de tir (x y) :";
     let coords = read_line () in
     let coords_split = String.split_on_char ' ' coords in
-    match coords_split with
-    | [x_str; y_str] ->
-        let coor = parse_coords [x_str; y_str] in
-        let x = fst coor in
-        let y = snd coor in
-        (match tirer plateau_joueur x y with
-          | Some i ->
-              if i >= 0 then
-                (update_etat (get_coord i !liste_bateaux) plateau_joueur ; true)
-              else true (*Cas ou le joueur doit recommencer*)
-          | _ -> false;);
-    | _ -> 
-        (print_endline "Entrée invalide, réessayez.";
-        true;) (* Répéter en cas d'erreur *)
+    if (iscoordonee coords_split) then
+      match coords_split with
+      | [x_str; y_str] ->
+          let coor = parse_coords [x_str; y_str] in
+          let x = fst coor in
+          let y = snd coor in
+          (match tirer plateau_joueur x y  with
+            | Success(i,s) ->
+              begin
+                affichage := s;
+                if i >= 0 then
+                  (if (update_etat (get_coord i !liste_bateaux) plateau_joueur) then (affichage := "\027[32mCoulé !\027[0m"; true)
+                  else true)
+                else false 
+              end
+            | Error(s) -> affichage := s; false;);
+      | _ -> 
+          (affichage:= "\027[31mEntrée invalide, réessayez.\027[0m";
+          true;) (* Répéter en cas d'erreur *)
+    else (affichage:= "\027[31mEntrée invalide, réessayez.\027[0m"; true;)
 
-let tours_ia plateau_joueur liste_bateaux =
+let tours_ia plateau_joueur liste_bateaux affichage =
   print_endline "Tour de l'IA";
-  let i = ia_tirer plateau_joueur in
-  if i >= 0 then let list = (get_coord i !liste_bateaux) in (
-    if(verif_coule list plateau_joueur) then (coule list plateau_joueur;  reset_tirs () ;afficher_plateau plateau_joueur; print_endline "L'IA a coulé un bateau!";)
-    else print_endline "L'IA a touché un bateau!"; true;)
-  else (print_endline "L'IA a raté!"; false;)
-
+  match ia_tirer plateau_joueur with
+  | Success(i,s) ->
+    begin
+      affichage := !affichage ^ "\n" ^s;
+      if i >= 0 then
+        (if (update_etat (get_coord i !liste_bateaux) plateau_joueur) then (affichage := "\027[32mCoulé !\027[0m"; true)
+        else true)
+      else false 
+    end
+  | _ -> true
 
 (* Fonction principale du jeu *)
 let rec jeu () =
   (* Initialisation de la random seed *)
-   Random.self_init ();
+  Random.self_init ();
   (* Affichage du menu *)
   let x = afficher_Menu () in
   (* Initialisation du jeu *)
@@ -80,24 +91,27 @@ let rec jeu () =
       if joueur2 = "IA" then placer_tous_bateaux_ia plateau_joueur_2 liste_bateaux_joueur_2
       else placer_tous_bateaux plateau_joueur_2 liste_bateaux_joueur_2;
       clearT ();
-
-
-
-  
+  let rec return_menu () =
+    print_endline "Voulez-vous retourner au menu? (o/n)";
+    let choix = read_line () in
+    if choix = "o" || choix="O" then jeu () else if choix= "n" || choix=="N" then clearT () else (print_endline "Entrée invalide"; return_menu ());
+  in
+  let affichage = ref "" in
   (* Boucle principale du jeu *)
   let rec boucle j =
     if tous_bateaux_coules plateau_joueur_1 then
       (afficher_plateau_gagner plateau_joueur_1;
-      print_endline ("Tous les bateaux du joueur "^joueur1^" ont été coulés! Le joueur "^joueur2^" a gagne!"))
+      print_endline ("\027[32mTous les bateaux du joueur "^joueur1^" ont été coulés! Le joueur "^joueur2^" a gagne!\027[0m"); return_menu ())
     else if tous_bateaux_coules plateau_joueur_2 then
       (afficher_plateau_gagner plateau_joueur_2;
-        print_endline ("Tous les bateaux du joueur "^joueur2^" ont été coulés! Le joueur "^joueur1^" a gagne!"))
+        print_endline ("\027[32mTous les bateaux du joueur "^joueur2^" ont été coulés! Le joueur "^joueur1^" a gagne!\027[0m");return_menu ())
     else 
-      if j==1 then if (afficher_plateau plateau_joueur_2 ; (tours_joueur j plateau_joueur_2 liste_bateaux_joueur_2)) then boucle 1 else boucle 2
+      if j==1 then 
+        if (if joueur2=="IA" then (afficher_plateaux_cotes_a_cotes plateau_joueur_2 plateau_joueur_1; tours_joueur j plateau_joueur_2 liste_bateaux_joueur_2 affichage) else (afficher_plateau plateau_joueur_2;tours_joueur j plateau_joueur_2 liste_bateaux_joueur_2 affichage)) then boucle 1 else boucle 2
         else if j==2 then if joueur2=="IA" then 
-          if (tours_ia plateau_joueur_1 liste_bateaux_joueur_1) then boucle 2 else (afficher_plateau plateau_joueur_1 ; afficher_espace (); boucle 1)
+          if (tours_ia plateau_joueur_1 liste_bateaux_joueur_1 affichage) then boucle 2 else boucle 1
           else
-          if (afficher_plateau plateau_joueur_1 ;(tours_joueur j plateau_joueur_1 liste_bateaux_joueur_1))then boucle 2 else boucle 1
+          if (afficher_plateau plateau_joueur_1 ;(tours_joueur j plateau_joueur_1 liste_bateaux_joueur_1 affichage))then boucle 2 else boucle 1
   in
   boucle 1;
 

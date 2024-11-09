@@ -2,6 +2,7 @@ open Regle
 open Bateaux
 open Outils
 open Plateaux
+open Action
 
 let ajoute_bateau_alea nom taille plateau liste_navire =
   let rec placer () = 
@@ -63,16 +64,12 @@ let placer_tous_bateaux_ia plateau liste_navire =
       in tire_deja_touche ()
     in
     tirs_effectues := (x, y) :: !tirs_effectues;
-    let resultat =
       match plateau.(x).(y) with
-      | Vide -> plateau.(x).(y) <- Rate;-1
-      | Coule -> -1
-      | Rate -> -1
+      | Vide -> plateau.(x).(y) <- Rate;Success(-1,"L'IA a raté!")
+      | Coule -> Error("Déjà coulé.")
+      | Rate -> Error("Déjà tiré ici.")
       | Navire (id, etat) ->
           match etat with
-          | Intact -> plateau.(x).(y) <- Navire (id, Touche);id
-          | Touche -> -1
-    in
-    if resultat != -1 then (dernier_touche := Some (x, y);print_endline ("L'IA a tiré en " ^ string_of_int x ^ " " ^ string_of_int y ^ " et a touche .");resultat)
-    else -1;
+          | Intact -> plateau.(x).(y) <- Navire (id, Touche);dernier_touche := Some (x, y);Success(id,"L'IA a touché un bateau!")
+          | Touche -> Error("Déjà touché.")
     

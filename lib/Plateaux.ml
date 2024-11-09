@@ -30,7 +30,7 @@ let rec place l =
   match l with
   | [] -> ()
   | (x, y)::q -> plateau.(x).(y) <- Navire (((length list_bateaux)+1,Intact)); place q
-in if (verif_coord list_coords plateau) then (place list_coords;) else ()
+in  place list_coords
 
 let rec coule list plateau =
   match list with
@@ -45,7 +45,7 @@ let rec verif_coule l plateau=
   |[]-> true
 
 let update_etat list plateau=  
-  if(verif_coule list plateau) then (coule list plateau) else ()
+  if(verif_coule list plateau) then ((coule list plateau);true) else false
 
   let reset_plateaux plateau list_navire =
     let rec reset l = 

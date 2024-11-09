@@ -211,7 +211,7 @@ let test_afficher_plateau_placement =
 let test_tirer_manque =
   Test.make
     ~count:100
-    ~name:"tirer retourne None et marque Rate quand il manque"
+    ~name:"tirer retourne Success(-1,\"Manqué!\") et marque Rate quand il manque"
     (pair (int_bound 10) (int_bound 10))  (* Génère des coordonnées x, y entre 0 et 10 *)
     (fun (x, y) ->
       let plateau = creer_plateau plateau_taille in
@@ -220,12 +220,12 @@ let test_tirer_manque =
       (* Applique la fonction tirer *)
       let result = tirer plateau x y in
       (* Vérifie le résultat et l'état de la case *)
-      result = None && plateau.(x).(y) = Rate)
+      result = Success(-1,"Manqué!") && plateau.(x).(y) = Rate)
 
 let test_tirer_touche =
   Test.make
     ~count:100
-    ~name:"tirer retourne Some id et marque Touche quand un bateau est touché"
+    ~name:"tirer retourne Success(1,\"\027[33mTouché!\027[0m\") quand un bateau est touché"
     (pair (int_bound 10) (int_bound 10))
     (fun (x, y) ->
       let plateau = creer_plateau plateau_taille in
@@ -234,12 +234,12 @@ let test_tirer_touche =
       (* Applique la fonction tirer *)
       let result = tirer plateau x y in
       (* Vérifie le résultat et l'état de la case *)
-      result = Some 1 && plateau.(x).(y) = Navire (1, Touche))
+      result = Success(1,"\027[33mTouché!\027[0m") && plateau.(x).(y) = Navire (1, Touche))
 
 let test_tirer_deja_touche =
   Test.make
     ~count:100
-    ~name:"tirer retourne Some (-1) quand la case a déjà été touchée"
+    ~name:"tirer retourne Success(-1,\"Déjà touché.\") quand la case a déjà été touchée"
     (pair (int_bound 10) (int_bound 10))
     (fun (x, y) ->
       let plateau = creer_plateau plateau_taille in
@@ -248,12 +248,12 @@ let test_tirer_deja_touche =
       (* Applique la fonction tirer *)
       let result = tirer plateau x y in
       (* Vérifie le résultat *)
-      result = Some (-1))
+      result = Success(-1,"Déjà touché."))
 
 let test_tirer_deja_coule =
   Test.make
     ~count:100
-    ~name:"tirer retourne Some (-1) quand la case est déjà coulée"
+    ~name:"tirer retourne Error(\"Déjà coulé.\") quand la case est déjà coulée"
     (pair (int_bound 10) (int_bound 10))
     (fun (x, y) ->
       let plateau = creer_plateau plateau_taille in
@@ -262,7 +262,7 @@ let test_tirer_deja_coule =
       (* Applique la fonction tirer *)
       let result = tirer plateau x y in
       (* Vérifie le résultat *)
-      result = Some (-1))
+      result = Error("Déjà coulé."))
 
 
 let () =

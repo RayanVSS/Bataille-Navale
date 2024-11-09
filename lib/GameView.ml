@@ -4,13 +4,17 @@ open Outils
 
 (* Affichage du plateau *)
 
+let affiche_indice taille =
+  let rec aff taille i =
+    if i<taille then (Printf.printf "%d " i;aff taille (i+1)) else ()
+  in aff taille 0
+
 let afficher_plateau plateau =
+  clearT ();
   let taille = Array.length plateau in
   (* Afficher les indices de colonnes *)
   print_string "  ";
-  for i = 0 to taille - 1 do
-    Printf.printf "%d " i
-  done;
+  affiche_indice taille;
   print_newline ();
 
   (* Afficher les lignes du plateau *)
@@ -20,7 +24,7 @@ let afficher_plateau plateau =
           match case with
           | Vide -> print_string "🟦"
           | Rate -> print_string "⬜"
-          | Coule -> print_string "🟥"
+          | Coule -> print_string "🟩"
           | Navire (_,e)-> match e with
                     | Touche -> print_string "🟨"
                     | _ -> print_string "🟦"
@@ -28,10 +32,54 @@ let afficher_plateau plateau =
       print_newline ()
     ) plateau
 
+  let affiche_ligne plateau_ia plateau_joueur taille =
+    let rec aff i =
+      if i<taille-1 then 
+        begin
+        Printf.printf "%c " (char_of_int (i + int_of_char 'A'));
+        Array.iter (fun case ->
+            match case with
+            | Vide -> print_string "🟦"
+            | Rate -> print_string "⬜"
+            | Coule -> print_string "🟩"
+            | Navire (_, e) -> match e with
+              | Touche -> print_string "🟨"
+              | _ -> print_string "🟦"
+          ) plateau_ia.(i) ;
+        print_string "   |   " ;
+        Printf.printf "%c " (char_of_int (i + int_of_char 'A'));
+        Array.iter (fun case ->
+            match case with
+            | Vide -> print_string "🟦"
+            | Rate -> print_string "⬜"
+            | Coule -> print_string "🟥"
+            | Navire (_, e) -> match e with
+              | Touche -> print_string "🟨"
+              | _ -> print_string "🟩"
+          ) plateau_joueur.(i);
+        print_newline ();
+        aff (i+1);
+        end
+      else print_newline ()
+    in aff 0
+  
+  let afficher_plateaux_cotes_a_cotes plateau_ia plateau_joueur =
+      clearT ();
+      let taille = Array.length plateau_ia in
+      (* Afficher les indices de colonnes pour les deux plateaux *)
+      print_string "  ";
+      affiche_indice taille;
+      print_string "  |     ";
+      affiche_indice taille;
+      print_newline ();
+      (* Afficher les lignes des deux plateaux *)
+      affiche_ligne plateau_ia plateau_joueur taille
+
 let afficher_espace () =
   print_endline "-----------------------------------"
 (* Affichage du plateau quand tu a gagner  *)
 let afficher_plateau_gagner plateau =
+  clearT ();
   let taille = Array.length plateau in
   (* Afficher les indices de colonnes *)
   print_string "  ";
@@ -49,7 +97,8 @@ let afficher_plateau_gagner plateau =
           | _ -> print_string "⬜"
         ) ligne;
       print_newline ()
-    ) plateau;print_endline "Tous les bateaux ont été coulés! Victoire!"
+    ) plateau;
+  print_endline ""
 
 let afficher_plateau_placement plateau =
   let taille = Array.length plateau in

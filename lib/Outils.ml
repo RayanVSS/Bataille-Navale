@@ -29,7 +29,7 @@ let coordonnees_valides x y taille_bateau orientation plateau_taille =
       else "clear"
     in
     ignore (Sys.command command)
-    
+
 let parse_coord coord_str =
   try
     int_of_string coord_str  
@@ -65,12 +65,9 @@ let parse_coords coords_split =
   let coords_split = verifier_et_inverser coords_split in
   match List.map parse_coord coords_split with
   | [a; b] when a >= 0 && a < 26 && b >= 0 -> (a, b)
-  | _ -> failwith "Format de coordonnées incorrectf"
+  | _ -> failwith "Format de coordonnées incorrect"
 
   let iscoordonee coords = 
     match coords with
-    | [x_str; y_str] -> 
-      if (String.length x_str = 1 && String.length y_str = 1) then 
-      x_str.[0] >= 'A' && x_str.[0] <= 'Z' && y_str.[0] >= '0' && y_str.[0] <= '9'
-      else false
+    | [x_str; y_str] ->String.length x_str == 1 && (String.length y_str==1 ||String.length y_str==2) && x_str.[0] >= 'A' && x_str.[0] <= 'Z' && (y_str.[0] >= '0' && y_str.[0] <= '9' || y_str= "10")
     | _ -> false

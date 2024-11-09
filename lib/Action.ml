@@ -7,31 +7,29 @@ open Regle
 (* Fonction pour placer un bateau *)
 
 (* Fonction pour tirer sur une case *)
+
+type tir = Success of int * string | Error of string 
+
 let tirer plateau x y =
   let taille = Array.length plateau in
   if x < 0 || x >= taille || y < 0 || y >= taille then
-    (print_endline "Coordonnées invalides, réessayez.";Some(-1)) (*Cas ou le joueur doit recommencer*)
+    (Error("\027[31mCoordonnées invalides, réessayez.\027[0m")) (*Cas ou le joueur doit recommencer*)
   else
     match plateau.(x).(y) with
     | Vide ->
-        print_endline "Manqué!";
         plateau.(x).(y) <- Rate;
-        None
+        Success(-1,"Manqué!")
     | Coule ->
-        print_endline "Déjà coulé.";
-        Some(-1) (*Cas ou le joueur doit recommencer*)
+        Error ("Déjà coulé.")
     | Rate ->
-        print_endline "Déjà tiré ici.";
-        Some(-1) (*Cas ou le joueur doit recommencer*)
+        Error ("Déjà tiré ici.")
     | Navire (id, etat) ->
         match etat with
         | Intact ->
-            print_endline "Touché!";
             plateau.(x).(y) <- Navire (id, Touche);
-            Some(id)
+            Success(id, "\027[33mTouché!\027[0m")
         | Touche ->
-            print_endline "Déjà touché.";
-            Some(-1) (*Cas ou le joueur doit recommencer*)
+            Error ("Déjà touché.")
 
   
   let demander_placement nom taille plateau =
@@ -52,20 +50,20 @@ let tirer plateau x y =
             let positions = make_pos_list x y taille orientation in
             let coords = List.map (fun (x, y) -> (x, y)) positions in
             if verif_coord coords plateau then
-              positions (* Coordonnées valides et bateau peut être placé *)
+              (clearT (); positions (* Coordonnées valides et bateau peut être placé *))
             else begin
-              print_endline "Les coordonnées sont valides mais il y a déjà un bateau à cet endroit.";
+              print_endline "\027[31mLes coordonnées sont valides mais il y a déjà un bateau à cet endroit.\027[0m";
               demander_valides () (* Redemander placement *)
             end
           else begin
-            print_endline "Les coordonnées ou l'orientation sont invalides, veuillez réessayer.";
+            print_endline "\027[31mLes coordonnées ou l'orientation sont invalides, veuillez réessayer.\027[0m";
             demander_valides () (* Redemander placement *)
           end
         | _ ->
-            print_endline "Entrée invalide, réessayez.";
+            print_endline "\027[31mEntrée invalide, réessayez.\027[0m";
             demander_valides () (* Redemander placement *)
       else 
-        (print_endline "Entrée invalide, réessayez.";
+        (print_endline "\027[31mEntrée invalide, réessayez.\027[0m";
         demander_valides ()) (* Redemander placement *)
     in
     demander_valides ()
@@ -73,7 +71,7 @@ let tirer plateau x y =
 
 (* Placer tous les bateaux *)
 let rec placer_tous_bateaux plateau list_bateaux=
-    let navires = navire_plateau_2 in
+    let navires = navire_plateau_1 in
     List.iter (fun (nom, nb ,taille)-> 
       let rec place n = 
         match n with
