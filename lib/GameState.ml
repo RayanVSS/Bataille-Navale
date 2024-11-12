@@ -5,6 +5,7 @@ open GameView
 open Outils
 open IA
 open Regle
+open Coords
 
 (* Fonction pour vérifier si tous les bateaux sont coulés *)
 
@@ -23,15 +24,9 @@ let tous_bateaux_coules plateau =
 let tours_joueur j plateau_joueur liste_bateaux affichage = 
     if (!affichage!="") then print_endline !affichage else ();
     print_endline ("Au tour du joueur "^ string_of_int j ^" de jouer");
-    print_endline "Entrez les coordonnées de tir (x y) :";
+    print_endline "Entrez les coordonnées de tir:";
     let coords = read_line () in
-    let coords_split = String.split_on_char ' ' coords in
-    if (iscoordonee coords_split) then
-      match coords_split with
-      | [x_str; y_str] ->
-          let coor = parse_coords [x_str; y_str] in
-          let x = fst coor in
-          let y = snd coor in
+    try let (x,y) = find_coords coords in
           (match tirer plateau_joueur x y  with
             | Success(i,s) ->
               begin
@@ -42,10 +37,7 @@ let tours_joueur j plateau_joueur liste_bateaux affichage =
                 else false 
               end
             | Error(s) -> affichage := s; false;);
-      | _ -> 
-          (affichage:= "\027[31mEntrée invalide, réessayez.\027[0m";
-          true;) (* Répéter en cas d'erreur *)
-    else (affichage:= "\027[31mEntrée invalide, réessayez.\027[0m"; true;)
+      with Invalid_argument(_) -> (affichage:= "\027[31mEntrée invalide, réessayez.\027[0m"; true;)
 
 let tours_ia plateau_joueur liste_bateaux affichage =
   print_endline "Tour de l'IA";

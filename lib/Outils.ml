@@ -1,5 +1,4 @@
 
-
 let rec get i liste = 
   match liste with
   | [] -> failwith "Sortie de liste"
@@ -29,8 +28,10 @@ let coordonnees_valides x y taille_bateau orientation plateau_taille =
       else "clear"
     in
     ignore (Sys.command command)
+    
 
 let parse_coord coord_str =
+  print_endline "Parsed a coord";
   try
     int_of_string coord_str  
   with Failure _ ->
@@ -55,11 +56,12 @@ let parse_coords coords_split =
     with Failure _ -> false
   in
   let verifier_et_inverser coords_split =
+    print_endline "Vérification";
     match coords_split with
-    | [a; b] when est_lettre a.[0] && est_chiffre b -> coords_split
-    | [b; a] when est_lettre a.[0] && est_chiffre b -> [a; b]
-    | [a; b] when est_chiffre a && est_chiffre b -> coords_split
-    | [a; b] when est_lettre a.[0] && est_lettre b.[0] -> coords_split
+    | [a; b] when est_lettre a.[0] && est_chiffre b -> print_endline "Lettre - Chiffre 1";coords_split
+    | [b; a] when est_lettre a.[0] && est_chiffre b -> print_endline "Lettre - Chiffre 2";[a; b]
+    | [a; b] when est_chiffre a && est_chiffre b -> print_endline "Chiffre - Chiffre ";coords_split
+    | [a; b] when est_lettre a.[0] && est_lettre b.[0] -> print_endline "Lettre - Lettre ";coords_split
     | _ -> failwith "Format de coordonnées incorrect"
   in
   let coords_split = verifier_et_inverser coords_split in
