@@ -1,4 +1,3 @@
-
 val aux : char list -> char * char list
 val next_letter : string -> char * char list
 val match_letter : char -> int           (* Can raise Invalid_argument("NaL") *)

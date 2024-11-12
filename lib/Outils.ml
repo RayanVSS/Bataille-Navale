@@ -18,8 +18,8 @@ let rec length liste =
 
 let coordonnees_valides x y taille_bateau orientation plateau_taille =
   if x < 0 || y < 0 || x >= plateau_taille || y >= plateau_taille then false
-  else if orientation = "h" || orientation="H" then  (y + taille_bateau < plateau_taille)
-  else if orientation= "v" || orientation="V" then (x + taille_bateau < plateau_taille ) 
+  else if orientation = "h" || orientation="H" then  (y + taille_bateau <= plateau_taille)
+  else if orientation= "v" || orientation="V" then (x + taille_bateau <= plateau_taille ) 
   else false
 
   let clearT () =
