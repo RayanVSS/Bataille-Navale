@@ -17,6 +17,8 @@ https://moule.informatique.univ-paris-diderot.fr/aouini/bataille-navalle/-/merge
 
 https://moule.informatique.univ-paris-diderot.fr/aouini/bataille-navalle/-/merge_requests/13
 
+https://moule.informatique.univ-paris-diderot.fr/aouini/bataille-navalle/-/merge_requests/14
+
 
 ## Issue fermé (correction de nos bugs)
 
