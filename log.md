@@ -31,3 +31,7 @@ https://moule.informatique.u-paris.fr/bencheik/Bataille_Navale/-/issues/12
 https://moule.informatique.u-paris.fr/bencheik/Bataille_Navale/-/issues/11
 
 https://moule.informatique.u-paris.fr/bencheik/Bataille_Navale/-/issues/10
+
+https://moule.informatique.univ-paris-diderot.fr/bencheik/Bataille_Navale/-/issues/17
+
+https://moule.informatique.univ-paris-diderot.fr/bencheik/Bataille_Navale/-/issues/16
