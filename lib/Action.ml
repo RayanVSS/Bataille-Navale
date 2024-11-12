@@ -3,6 +3,7 @@ open Bateaux
 open Outils
 open GameView
 open Regle
+open Coords
 
 (* Fonction pour placer un bateau *)
 
@@ -36,14 +37,9 @@ let tirer plateau x y =
     afficher_plateau_placement plateau;
     let rec demander_valides () =
       print_endline (Printf.sprintf "Placer le %s (taille: %d)" nom taille);
-      print_endline "Entrez les coordonnées de départ (x y) :";
+      print_endline "Entrez les coordonnées de départ:";
       let coords = read_line () in
-      let coords_split = String.split_on_char ' ' coords in
-      if (iscoordonee coords_split) then
-        match coords_split with
-        | [x_str;y_str]-> 
-          let x = parse_coord  x_str in
-          let y = parse_coord y_str in
+      try let (x,y) = find_coords coords in
           print_endline "Entrez l'orientation (h pour horizontal, v pour vertical) :";
           let orientation = read_line () in
           if coordonnees_valides x y taille orientation plateau_taille then
@@ -59,10 +55,7 @@ let tirer plateau x y =
             print_endline "\027[31mLes coordonnées ou l'orientation sont invalides, veuillez réessayer.\027[0m";
             demander_valides () (* Redemander placement *)
           end
-        | _ ->
-            print_endline "\027[31mEntrée invalide, réessayez.\027[0m";
-            demander_valides () (* Redemander placement *)
-      else 
+        with Invalid_argument(_) -> 
         (print_endline "\027[31mEntrée invalide, réessayez.\027[0m";
         demander_valides ()) (* Redemander placement *)
     in
