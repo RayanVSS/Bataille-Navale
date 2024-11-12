@@ -8,6 +8,8 @@ https://moule.informatique.u-paris.fr/cisses/abalone/-/issues/22
 ## Merge request
 https://moule.informatique.univ-paris-diderot.fr/aouini/bataille-navalle/-/merge_requests/8
 https://moule.informatique.u-paris.fr/cisses/abalone/-/merge_requests/9
+https://moule.informatique.univ-paris-diderot.fr/aouini/bataille-navalle/-/merge_requests/11
+https://moule.informatique.univ-paris-diderot.fr/aouini/bataille-navalle/-/merge_requests/13
 
 
 ## Issue fermé (correction de nos bugs)
