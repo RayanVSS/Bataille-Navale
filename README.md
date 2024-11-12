@@ -38,6 +38,7 @@ Pour lancer le jeu, exécutez la commande suivante :
 
 - Pour les utilisateurs Unix:
 ```sh
+chmod u+x ./run.sh 
 ./run.sh
 ```
 - Pour les utilisateurs Windows (les meilleurs):
