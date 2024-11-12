@@ -8,15 +8,15 @@ let next_letter (str : string) = aux (List.init (String.length str) (String.get 
 
     
 let match_letter c = match c with
-  | 'A' | 'a' | 'À' | 'à' -> 0
+  | 'A' | 'a' -> 0
   | 'B' | 'b' -> 1
   | 'C' | 'c' -> 2
   | 'D' | 'd' -> 3
-  | 'E' | 'e' | 'É' | 'é'-> 4
+  | 'E' | 'e' -> 4
   | 'F' | 'f' -> 5
   | 'G' | 'g' -> 6
   | 'H' | 'h' -> 7
-  | 'I' | 'i' | 'Ï' | 'ï' -> 8
+  | 'I' | 'i' -> 8
   | 'J' | 'j' -> 9
   | 'K' | 'k' -> 10
   | _ -> raise(Invalid_argument("NaL"))
