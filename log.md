@@ -8,6 +8,8 @@ https://moule.informatique.univ-paris-diderot.fr/vidaln/world-championship-russi
 
 https://moule.informatique.u-paris.fr/cisses/abalone/-/issues/22
 
+https://moule.informatique.univ-paris-diderot.fr/piget/blokus/-/issues/15
+
 ## Merge request
 https://moule.informatique.univ-paris-diderot.fr/aouini/bataille-navalle/-/merge_requests/8
 
@@ -22,6 +24,8 @@ https://moule.informatique.univ-paris-diderot.fr/aouini/bataille-navalle/-/merge
 https://moule.informatique.univ-paris-diderot.fr/piget/blokus/-/merge_requests/9
 
 https://moule.informatique.univ-paris-diderot.fr/piget/blokus/-/merge_requests/10
+
+https://moule.informatique.univ-paris-diderot.fr/pan/ocaml-project/-/merge_requests/36
 
 ## Issue fermé (correction de nos bugs)
 
