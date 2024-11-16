@@ -10,6 +10,8 @@ https://moule.informatique.u-paris.fr/cisses/abalone/-/issues/22
 
 https://moule.informatique.univ-paris-diderot.fr/piget/blokus/-/issues/15
 
+https://moule.informatique.univ-paris-diderot.fr/piget/blokus/-/issues/21
+
 ## Merge request
 https://moule.informatique.univ-paris-diderot.fr/aouini/bataille-navalle/-/merge_requests/8
 
