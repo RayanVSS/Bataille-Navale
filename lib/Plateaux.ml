@@ -11,7 +11,7 @@ type case =
 (* taille du plateau *)
 let plateau_taille = 11
 
-(* création d'un plateau vide de taille spécifiée *) 
+(* création d'un plateau vide de taille spécifiée *)
 let creer_plateau taille =
   Array.make_matrix taille taille Vide
 
@@ -33,7 +33,7 @@ let placer_bateaux plateau list_coords list_bateaux =
     match l with
     | [] -> ()
     | (x, y)::q -> 
-        plateau.(x).(y) <- Navire ((List.length list_bateaux + 1, Intact))
+        plateau.(x).(y) <- Navire (( length list_bateaux + 1, Intact))
         ; place q
   in
   place list_coords
