@@ -1,3 +1,4 @@
+(* Action.ml *)
 open Plateaux
 open Bateaux
 open Outils
@@ -5,12 +6,10 @@ open GameView
 open Regle
 open Coords
 
-(* Fonction pour placer un bateau *)
+type tir = Success of int * string | Error of string   
+(* Success de l'id du bateau touché et message de succès, Error de message d'erreur *)
 
 (* Fonction pour tirer sur une case *)
-
-type tir = Success of int * string | Error of string 
-
 let tirer plateau x y =
   let taille = Array.length plateau in
   if x < 0 || x >= taille || y < 0 || y >= taille then
@@ -32,20 +31,20 @@ let tirer plateau x y =
         | Touche ->
             Error ("Déjà touché.")
 
-  
+  (* Fonction pour demander au joueur de placer le bateau *)
   let demander_placement nom taille plateau =
-    afficher_plateau_placement plateau;
+    afficher_plateau_placement plateau; (* Afficher le plateau *)
     let rec demander_valides () =
       print_endline (Printf.sprintf "Placer le %s (taille: %d)" nom taille);
       print_endline "Entrez les coordonnées de départ:";
       let coords = read_line () in
-      try let (x,y) = find_coords coords in
+      try let (x,y) = find_coords coords in (* Trouver les coordonnées *)
           print_endline "Entrez l'orientation (h pour horizontal, v pour vertical) :";
           let orientation = read_line () in
-          if coordonnees_valides x y taille orientation plateau_taille then
-            let positions = make_pos_list x y taille orientation in
-            let coords = List.map (fun (x, y) -> (x, y)) positions in
-            if verif_coord coords plateau then
+          if coordonnees_valides x y taille orientation plateau_taille then (* Vérifier si les coordonnées sont valides *)
+            let positions = make_pos_list x y taille orientation in (* Créer la liste des positions *)
+            let coords = List.map (fun (x, y) -> (x, y)) positions in (* Convertir les positions en coordonnées *)
+            if verif_coord coords plateau then 
               (clearT (); positions (* Coordonnées valides et bateau peut être placé *))
             else begin
               print_endline "\027[31mLes coordonnées sont valides mais il y a déjà un bateau à cet endroit.\027[0m";

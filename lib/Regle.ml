@@ -1,7 +1,8 @@
+(* different bateau durant le jeux *) 
 let navire_plateau_1 = ("PorteAvion",1,5)::("Croiseur",1,4)::("ContreTorpilleur",2,3)::("SousMarin",1,3)::("Torpilleur",1,2)::[]
 let navire_plateau_2 = ("Torpilleur",1,2)::[]
 
-
+(* affichage des regle du jeux depuis le menu*)
 let afficher_regles () =
   print_endline "Règles de Bataille Navale :";
   print_endline "1. Chaque joueur place ses bateaux sur son plateau.";

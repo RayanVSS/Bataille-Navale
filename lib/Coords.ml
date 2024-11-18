@@ -3,10 +3,10 @@ let rec aux chars = match chars with
   |' '::tail -> aux (tail) 
   |l::tail ->(l,tail)
 
-
+(* lettre suivante *)
 let next_letter (str : string) = aux (List.init (String.length str) (String.get str))
 
-    
+(* de la lettre à la position *)
 let match_letter c = match c with
   | 'A' | 'a' -> 0
   | 'B' | 'b' -> 1
@@ -21,7 +21,7 @@ let match_letter c = match c with
   | 'K' | 'k' -> 10
   | _ -> raise(Invalid_argument("NaL"))
            
-           
+(* de la position au nombre *)
 let match_number c1 c2 = match c1 with 
   | '1' when (c2 = '0') -> 10
   | '1' -> 1
@@ -36,9 +36,10 @@ let match_number c1 c2 = match c1 with
   | '0' -> 0
   | _ -> raise(Invalid_argument("NaN"))
   
+(* trouver les coordonnées *) 
 let find_coords string = 
-  let (c1,tail) = (next_letter string) in
-  let (c2,tail) = (aux tail) in
+  let (c1,tail) = (next_letter string) in (* trouver la lettre *)
+  let (c2,tail) = (aux tail) in (* trouver le nombre *) 
   let (c3,_) = (aux tail) in 
   try 
     let num = (match_letter c1) in

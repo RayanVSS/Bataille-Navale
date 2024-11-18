@@ -2,13 +2,13 @@ open Bateaux
 open Plateaux
 open Outils
 
-(* Affichage du plateau *)
 
 let affiche_indice taille =
   let rec aff taille i =
     if i<taille then (Printf.printf "%d " i;aff taille (i+1)) else ()
   in aff taille 0
 
+(* Affichage du plateau *)
 let afficher_plateau plateau =
   clearT ();
   let taille = Array.length plateau in
@@ -29,9 +29,10 @@ let afficher_plateau plateau =
                     | Touche -> print_string "🟨"
                     | _ -> print_string "🟦"
         ) ligne;
-      print_newline ()
+      print_newline () 
     ) plateau
-
+    
+(* Affichage du plateau de l'IA et du joueur côte à côte *)
   let affiche_ligne plateau_ia plateau_joueur taille =
     let rec aff i =
       if i<taille-1 then 

@@ -8,7 +8,6 @@ open Regle
 open Coords
 
 (* Fonction pour vérifier si tous les bateaux sont coulés *)
-
 let tous_bateaux_coules plateau =
   let coules = ref true in
   Array.iter (fun ligne ->
@@ -21,6 +20,8 @@ let tous_bateaux_coules plateau =
     ) plateau;
   !coules
 
+
+(* Fonction pour placer tous les bateaux *)  
 let tours_joueur j plateau_joueur liste_bateaux affichage = 
     if (!affichage!="") then print_endline !affichage else ();
     print_endline ("Au tour du joueur "^ string_of_int j ^" de jouer");
@@ -39,6 +40,7 @@ let tours_joueur j plateau_joueur liste_bateaux affichage =
             | Error(s) -> affichage := s; false;);
       with Invalid_argument(_) -> (affichage:= "\027[31mEntrée invalide, réessayez.\027[0m"; true;)
 
+      
 let tours_ia plateau_joueur liste_bateaux affichage =
   print_endline "Tour de l'IA";
   match ia_tirer plateau_joueur with
@@ -105,5 +107,5 @@ let rec jeu () =
           else
           if (afficher_plateau plateau_joueur_1 ;(tours_joueur j plateau_joueur_1 liste_bateaux_joueur_1 affichage))then boucle 2 else boucle 1
   in
-  boucle 1;
+  boucle 1; 
 
