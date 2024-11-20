@@ -60,8 +60,8 @@ let test_coordonnees_valides =
     (fun (x, y, taille_bateau, orientation, plateau_taille) -> 
       coordonnees_valides x y taille_bateau orientation plateau_taille =
       (x >= 0 && y >= 0 && x < plateau_taille && y < plateau_taille &&
-       ((orientation = "h" && y + taille_bateau < plateau_taille) || 
-        (orientation = "v" && x + taille_bateau < plateau_taille)))) 
+       ((orientation = "h" && y + taille_bateau <= plateau_taille) || 
+        (orientation = "v" && x + taille_bateau <= plateau_taille)))) 
 
 
 

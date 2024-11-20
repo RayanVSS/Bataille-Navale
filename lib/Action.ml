@@ -1,3 +1,4 @@
+(* Action.ml *)
 open Plateaux
 open Bateaux
 open Outils
@@ -5,12 +6,10 @@ open GameView
 open Regle
 open Coords
 
-(* Fonction pour placer un bateau *)
+type tir = Success of int * string | Error of string   
+(* Success de l'id du bateau touché et message de succès, Error de message d'erreur *)
 
 (* Fonction pour tirer sur une case *)
-
-type tir = Success of int * string | Error of string 
-
 let tirer plateau x y =
   let taille = Array.length plateau in
   if x < 0 || x >= taille || y < 0 || y >= taille then
@@ -32,9 +31,9 @@ let tirer plateau x y =
         | Touche ->
             Error ("Déjà touché.")
 
-  
+  (* Fonction pour demander au joueur de placer le bateau *)
   let demander_placement nom taille plateau =
-    afficher_plateau_placement plateau;
+    afficher_plateau_placement plateau; (* Afficher le plateau *)
     let rec demander_valides () =
       print_endline (Printf.sprintf "Placer le %s (taille: %d)" nom taille);
       print_endline "Entrez les coordonnées de départ:";
