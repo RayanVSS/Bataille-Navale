@@ -159,6 +159,6 @@ let afficher_Menu () =
   print_endline "2️⃣​ Quitter";
   print_string "Choix: ";
   *)
-  read_line ();
+  (try let x = read_line () in x with End_of_file ->  (print_endline "\027[31mVous avez quitté le jeu de façon non contrôlé\027[0m"); exit 0);
   
 
