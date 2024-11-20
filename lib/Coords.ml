@@ -13,10 +13,18 @@ let char_to_int c =
   | 'K' | 'k' -> 10
   | _ -> failwith "Invalid coordinates"
 
+let rec is_empty list =
+  match list with
+  | ""::q -> is_empty q
+  | [] -> true
+  | _ -> false
+
 let find_coords s =
   let list = String.split_on_char ' ' s in
   match list with
-  | [x; y] -> 
+  | x::y::q -> 
+    if not (is_empty q) then failwith "Invalid coordinates"
+    else
     (try 
       let a = (char_to_int x.[0]) in
       let b = int_of_string y in
