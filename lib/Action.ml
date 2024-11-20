@@ -38,26 +38,28 @@ let tirer plateau x y =
     let rec demander_valides () =
       print_endline (Printf.sprintf "Placer le %s (taille: %d)" nom taille);
       print_endline "Entrez les coordonnées de départ:";
-      let coords = read_line () in
+      (try let coords = try read_line () with End_of_file -> raise (Failure "End_of_file") in
       try let (x,y) = find_coords coords in
-          print_endline "Entrez l'orientation (h pour horizontal, v pour vertical) :";
-          let orientation = read_line () in
-          if coordonnees_valides x y taille orientation plateau_taille then
-            let positions = make_pos_list x y taille orientation in
-            let coords = List.map (fun (x, y) -> (x, y)) positions in
-            if verif_coord coords plateau then
-              (clearT (); positions (* Coordonnées valides et bateau peut être placé *))
-            else begin
-              print_endline "\027[31mLes coordonnées sont valides mais il y a déjà un bateau à cet endroit.\027[0m";
-              demander_valides () (* Redemander placement *)
-            end
-          else begin
-            print_endline "\027[31mLes coordonnées ou l'orientation sont invalides, veuillez réessayer.\027[0m";
-            demander_valides () (* Redemander placement *)
-          end
-        with Invalid_argument(_) -> 
-        (print_endline "\027[31mEntrée invalide, réessayez.\027[0m";
-        demander_valides ()) (* Redemander placement *)
+      print_endline "Entrez l'orientation (h pour horizontal, v pour vertical) :";
+      let orientation = try read_line () with End_of_file -> raise (Failure "End_of_file") in
+      if coordonnees_valides x y taille orientation plateau_taille then
+        let positions = make_pos_list x y taille orientation in
+        let coords = List.map (fun (x, y) -> (x, y)) positions in
+        if verif_coord coords plateau then
+          (clearT (); positions (* Coordonnées valides et bateau peut être placé *))
+        else begin
+          print_endline "\027[31mLes coordonnées sont valides mais il y a déjà un bateau à cet endroit.\027[0m";
+          demander_valides () (* Redemander placement *)
+        end
+      else begin
+        print_endline "\027[31mLes coordonnées ou l'orientation sont invalides, veuillez réessayer.\027[0m";
+        demander_valides () (* Redemander placement *)
+      end
+    with Failure (_) -> 
+    (print_endline "\027[31mEntrée invalide, réessayez.\027[0m";
+    demander_valides ()) (* Redemander placement *)
+    with Failure (_) ->
+    (print_endline "\027[31mVous avez quitté le jeu de façon non contrôlé\027[0m"); exit 0);
     in
     demander_valides ()
 
