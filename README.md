@@ -28,7 +28,7 @@ opam install qcheck
 Clonez le dépôt :
 
 ```sh
-git clone https://moule.informatique.univ-paris-diderot.fr/bencheik/Bataille_Navale.git
+git clone https://github.com/RayanVSS/Bataille-Navale.git
 cd bataille_navale
 ```
 
